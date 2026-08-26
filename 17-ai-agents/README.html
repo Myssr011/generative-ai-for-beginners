@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jalankan agen secara berurutan, meneruskan konteks percakapan sepanjang rantai</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.6; max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem;
+    color: #1f2328; background: #ffffff;
+  }
+  h1, h2, h3, h4 { line-height: 1.25; margin-top: 1.8em; }
+  h1 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  h2 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  a { color: #0969da; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; height: auto; }
+  pre {
+    background: #f6f8fa; padding: 1em; overflow-x: auto;
+    border-radius: 6px; font-size: 85%;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    background: #f6f8fa; padding: .2em .4em; border-radius: 4px; font-size: 85%;
+  }
+  pre code { background: none; padding: 0; }
+  table { border-collapse: collapse; display: block; overflow-x: auto; }
+  th, td { border: 1px solid #d1d9e0; padding: 6px 13px; }
+  th { background: #f6f8fa; }
+  blockquote {
+    border-left: 4px solid #d1d9e0; margin: 0; padding: 0 1em; color: #59636e;
+  }
+  hr { border: none; border-top: 1px solid #d1d9e0; margin: 2em 0; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e6edf3; background: #0d1117; }
+    h1, h2 { border-color: #30363d; }
+    a { color: #4493f8; }
+    pre, code, th { background: #161b22; }
+    th, td { border-color: #30363d; }
+    blockquote { border-color: #30363d; color: #9198a1; }
+    hr { border-color: #30363d; }
+  }
+</style>
+</head>
+<body>
+<h2 id="pendahuluan">Pendahuluan</h2>
+<p>Agen AI mewakili perkembangan menarik dalam Generative AI, memungkinkan Large Language Models (LLM) berkembang dari asisten menjadi agen yang mampu mengambil tindakan. Kerangka kerja Agen AI memungkinkan pengembang membuat aplikasi yang memberi LLM akses ke alat dan manajemen status. Kerangka ini juga meningkatkan visibilitas, memungkinkan pengguna dan pengembang memantau tindakan yang direncanakan oleh LLM, sehingga memperbaiki manajemen pengalaman.</p>
+<p>Pelajaran ini akan mencakup area berikut:</p>
+<ul>
+<li>Memahami apa itu Agen AI - Apa sebenarnya Agen AI itu?</li>
+<li>Menjelajahi lima Framework Agen AI yang berbeda - Apa yang membuat mereka unik?</li>
+<li>Menerapkan Agen AI tersebut ke berbagai kasus penggunaan - Kapan kita harus menggunakan Agen AI?</li>
+</ul>
+<h2 id="tujuan-pembelajaran">Tujuan pembelajaran</h2>
+<p>Setelah mengikuti pelajaran ini, Anda akan dapat:</p>
+<ul>
+<li>Menjelaskan apa itu Agen AI dan bagaimana mereka dapat digunakan.</li>
+<li>Memahami perbedaan antara beberapa Framework Agen AI populer, dan bagaimana mereka berbeda.</li>
+<li>Memahami bagaimana Agen AI berfungsi untuk membangun aplikasi dengan mereka.</li>
+</ul>
+<h2 id="apa-itu-agen-ai">Apa Itu Agen AI?</h2>
+<p>Agen AI adalah bidang yang sangat menarik dalam dunia Generative AI. Bersama dengan kegembiraan ini kadang muncul kebingungan mengenai istilah dan penerapannya. Untuk membuatnya sederhana dan mencakup sebagian besar alat yang merujuk pada Agen AI, kami akan menggunakan definisi ini:</p>
+<p>Agen AI memungkinkan Large Language Models (LLM) melakukan tugas dengan memberi mereka akses ke <strong>status</strong> dan <strong>alat</strong>.</p>
+<p><img alt="Agent Model" src="../translated_images/id/what-agent.21f2893bdfd01e6a.webp" /></p>
+<p>Mari definisikan istilah-istilah ini:</p>
+<p><strong>Large Language Models</strong> - Ini adalah model yang disebutkan sepanjang kursus ini seperti GPT-3.5, GPT-4, Llama-2, dll.</p>
+<p><strong>Status</strong> - Ini merujuk pada konteks tempat LLM bekerja. LLM menggunakan konteks dari tindakan masa lalunya dan konteks saat ini, membimbing pengambilan keputusan untuk tindakan selanjutnya. Kerangka Kerja Agen AI memudahkan pengembang menjaga konteks ini.</p>
+<p><strong>Alat</strong> - Untuk menyelesaikan tugas yang diminta pengguna dan telah direncanakan oleh LLM, LLM membutuhkan akses ke alat. Contoh alat bisa berupa basis data, API, aplikasi eksternal atau bahkan LLM lain!</p>
+<p>Definisi ini diharapkan memberi Anda landasan yang baik ke depan saat kita melihat bagaimana mereka diimplementasikan. Mari jelajahi beberapa kerangka kerja Agen AI yang berbeda:</p>
+<h2 id="langchain-agents">LangChain Agents</h2>
+<p><a href="https://python.langchain.com/docs/how_to/#agents?WT.mc_id=academic-105485-koreyst">LangChain Agents</a> adalah implementasi dari definisi yang kami berikan di atas.</p>
+<p>Untuk mengelola <strong>status</strong>, ia menggunakan fungsi bawaan yang disebut <code>AgentExecutor</code>. Ini menerima <code>agent</code> yang sudah ditentukan dan <code>tools</code> yang tersedia untuknya.</p>
+<p><code>Agent Executor</code> juga menyimpan riwayat obrolan untuk memberikan konteks percakapan.</p>
+<p><img alt="Langchain Agents" src="../translated_images/id/langchain-agents.edcc55b5d5c43716.webp" /></p>
+<p>LangChain menawarkan <a href="https://integrations.langchain.com/tools?WT.mc_id=academic-105485-koreyst">katalog alat</a> yang dapat diimpor ke aplikasi Anda di mana LLM dapat mengaksesnya. Ini dibuat oleh komunitas dan tim LangChain.</p>
+<p>Anda kemudian dapat menentukan alat ini dan memberikannya ke <code>Agent Executor</code>.</p>
+<p>Visibilitas adalah aspek penting lainnya saat membahas Agen AI. Penting bagi pengembang aplikasi untuk memahami alat mana yang digunakan LLM dan mengapa. Untuk itu, tim di LangChain telah mengembangkan LangSmith.</p>
+<h2 id="autogen">AutoGen</h2>
+<p>Kerangka kerja Agen AI berikut yang akan kita bahas adalah <a href="https://microsoft.github.io/autogen/?WT.mc_id=academic-105485-koreyst">AutoGen</a>. Fokus utama AutoGen adalah percakapan. Agen bersifat <strong>dapat diajak bicara</strong> dan <strong>dapat disesuaikan</strong>.</p>
+<p><strong>Dapat diajak bicara -</strong> LLM bisa memulai dan melanjutkan percakapan dengan LLM lain untuk menyelesaikan tugas. Ini dilakukan dengan membuat <code>AssistantAgents</code> dan memberi mereka pesan sistem khusus.</p>
+<pre><code class="language-python">
+autogen.AssistantAgent( name=&quot;Coder&quot;, llm_config=llm_config, ) pm = autogen.AssistantAgent( name=&quot;Product_manager&quot;, system_message=&quot;Creative in software product ideas.&quot;, llm_config=llm_config, )
+
+</code></pre>
+<p><strong>Dapat disesuaikan</strong> - Agen dapat didefinisikan tidak hanya sebagai LLM tetapi juga sebagai pengguna atau alat. Sebagai pengembang, Anda dapat mendefinisikan <code>UserProxyAgent</code> yang bertugas berinteraksi dengan pengguna untuk umpan balik dalam menyelesaikan tugas. Umpan balik ini dapat melanjutkan atau menghentikan pelaksanaan tugas.</p>
+<pre><code class="language-python">user_proxy = UserProxyAgent(name=&quot;user_proxy&quot;)
+</code></pre>
+<h3 id="status-dan-alat">Status dan Alat</h3>
+<p>Untuk mengubah dan mengelola status, agen asisten menghasilkan kode Python untuk menyelesaikan tugas.</p>
+<p>Berikut contoh prosesnya:</p>
+<p><img alt="AutoGen" src="../translated_images/id/autogen.dee9a25a45fde584.webp" /></p>
+<h4 id="llm-didefinisikan-dengan-pesan-sistem">LLM Didefinisikan dengan Pesan Sistem</h4>
+<pre><code class="language-python">system_message=&quot;For weather related tasks, only use the functions you have been provided with. Reply TERMINATE when the task is done.&quot;
+</code></pre>
+<p>Pesan sistem ini mengarahkan LLM tertentu ini ke fungsi yang relevan untuk tugasnya. Ingat, dengan AutoGen Anda bisa memiliki beberapa AssistantAgents dengan pesan sistem berbeda.</p>
+<h4 id="obrolan-dimulai-oleh-pengguna">Obrolan Dimulai oleh Pengguna</h4>
+<pre><code class="language-python">user_proxy.initiate_chat( chatbot, message=&quot;I am planning a trip to NYC next week, can you help me pick out what to wear? &quot;, )
+
+</code></pre>
+<p>Pesan dari user_proxy (Manusia) ini yang akan memulai proses Agen untuk mengeksplorasi fungsi yang mungkin harus dijalankan.</p>
+<h4 id="fungsi-dijalankan">Fungsi Dijalankan</h4>
+<pre><code class="language-bash">chatbot (to user_proxy):
+
+***** Suggested tool Call: get_weather ***** Arguments: {&quot;location&quot;:&quot;New York City, NY&quot;,&quot;time_periond:&quot;7&quot;,&quot;temperature_unit&quot;:&quot;Celsius&quot;} ******************************************************** --------------------------------------------------------------------------------
+
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; EXECUTING FUNCTION get_weather... user_proxy (to chatbot): ***** Response from calling function &quot;get_weather&quot; ***** 112.22727272727272 EUR ****************************************************************
+
+</code></pre>
+<p>Setelah obrolan awal diproses, Agen akan mengirimkan alat yang disarankan untuk dipanggil. Dalam kasus ini, itu sebuah fungsi bernama <code>get_weather</code>. Bergantung pada konfigurasi Anda, fungsi ini bisa dijalankan otomatis dan dibaca oleh Agen atau dijalankan berdasarkan input pengguna.</p>
+<p>Anda dapat menemukan daftar <a href="https://microsoft.github.io/autogen/docs/Examples/?WT.mc_id=academic-105485-koreyst">contoh kode AutoGen</a> untuk mengeksplorasi lebih lanjut bagaimana memulai pembuatan.</p>
+<h2 id="microsoft-agent-framework">Microsoft Agent Framework</h2>
+<p><a href="https://learn.microsoft.com/agent-framework/?WT.mc_id=academic-105485-koreyst">Microsoft Agent Framework</a> adalah SDK open-source Microsoft untuk membangun Agen AI dan sistem multi-agen dalam <strong>Python</strong> dan <strong>.NET</strong>. Ini menggabungkan kekuatan dua proyek Microsoft sebelumnya — fitur enterprise dari <strong>Semantic Kernel</strong> dan orkestrasi multi-agen dari <strong>AutoGen</strong> — ke dalam satu kerangka kerja yang didukung. Jika Anda memulai proyek agen baru hari ini, ini adalah pengganti yang direkomendasikan untuk AutoGen.</p>
+<p>Kerangka ini dapat diskalakan dari satu <strong>agen obrolan</strong> hingga <strong>alur kerja multi-agen</strong> yang kompleks, dan terintegrasi langsung dengan Microsoft Foundry, Azure OpenAI, dan OpenAI. Ia juga menyediakan pengamatan bawaan melalui OpenTelemetry sehingga Anda dapat melacak apa yang dilakukan agen Anda secara tepat.</p>
+<h3 id="status-dan-alat_1">Status dan Alat</h3>
+<p><strong>Status</strong> - Kerangka mengelola konteks percakapan untuk Anda melalui <strong>threads</strong>. Agen melacak riwayat pesan (permintaan pengguna, panggilan alat, dan hasilnya), sehingga setiap giliran membangun atas yang sebelumnya. Threads juga dapat disimpan agar percakapan dapat dijeda dan dilanjutkan nanti.</p>
+<p><strong>Alat</strong> - Anda memberikan alat kepada agen dengan melewatkan fungsi Python biasa. Parameter yang dianotasi tipe otomatis menjadi skema, sehingga model tahu bagaimana dan kapan memanggilnya (pemanggilan fungsi). Kerangka juga mendukung server Model Context Protocol (MCP) dan alat yang dihosting seperti interpreter kode.</p>
+<p>Berikut contoh agen tunggal dengan alat kustom:</p>
+<pre><code class="language-python">import asyncio
+from typing import Annotated
+
+from pydantic import Field
+from agent_framework import Agent
+from agent_framework.openai import OpenAIChatClient
+
+
+def get_weather(
+    location: Annotated[str, Field(description=&quot;The location to get the weather for.&quot;)],
+) -&gt; str:
+    &quot;&quot;&quot;Get the weather for a given location.&quot;&quot;&quot;
+    return f&quot;The weather in {location} is sunny with a high of 22°C.&quot;
+
+
+async def main():
+    agent = Agent(
+        client=OpenAIChatClient(),
+        instructions=&quot;You are a helpful assistant that can answer weather questions.&quot;,
+        tools=[get_weather],
+    )
+
+    response = await agent.run(&quot;What's the weather in Amsterdam?&quot;)
+    print(response)
+
+
+asyncio.run(main())
+</code></pre>
+<p>Untuk menghubungkan ke Azure OpenAI di Microsoft Foundry, lewati endpoint dan kredensial Anda ke klien:</p>
+<pre><code class="language-python">from azure.identity.aio import AzureCliCredential
+from agent_framework.openai import OpenAIChatClient
+
+client = OpenAIChatClient(
+    model=&quot;my-gpt-4o-deployment&quot;,
+    azure_endpoint=&quot;https://my-resource.openai.azure.com&quot;,
+    credential=AzureCliCredential(),
+)
+</code></pre>
+<h3 id="alur-kerja-multi-agen">Alur kerja multi-agen</h3>
+<p>Keunggulan kerangka adalah mengorkestrasi beberapa agen bersama-sama. Misalnya, Anda dapat menjalankan agen satu per satu (masing-masing meneruskan konteks ke yang berikutnya) atau menyebar ke beberapa agen secara paralel dan mengagregasi hasilnya:</p>
+<pre><code class="language-python">from agent_framework.orchestrations import SequentialBuilder, ConcurrentBuilder
+
+# Jalankan agen secara berurutan, meneruskan konteks percakapan sepanjang rantai
+sequential = SequentialBuilder(participants=[researcher, writer, editor]).build()
+
+# Sebarkan ke agen secara paralel, kemudian gabungkan respons mereka
+concurrent = ConcurrentBuilder(participants=[analyst_a, analyst_b, analyst_c]).build()
+</code></pre>
+<p>Untuk menginstal kerangka dan memulai:</p>
+<pre><code class="language-bash">pip install agent-framework-core
+# Integrasi opsional
+pip install agent-framework-openai       # OpenAI dan Azure OpenAI
+pip install agent-framework-foundry      # Microsoft Foundry
+</code></pre>
+<p>Anda dapat mengeksplorasi lebih lanjut di <a href="https://github.com/microsoft/agent-framework?WT.mc_id=academic-105485-koreyst">repositori Microsoft Agent Framework</a> dan <a href="https://learn.microsoft.com/agent-framework/?WT.mc_id=academic-105485-koreyst">dokumentasi resmi</a>.</p>
+<h2 id="taskweaver">Taskweaver</h2>
+<p>Kerangka agen berikut yang akan kita jelajahi adalah <a href="https://microsoft.github.io/TaskWeaver/?WT.mc_id=academic-105485-koreyst">Taskweaver</a>. Ini dikenal sebagai agen "code-first" karena alih-alih hanya bekerja dengan <code>strings</code>, ia dapat bekerja dengan DataFrames di Python. Ini sangat berguna untuk analisis data dan tugas pembuatan. Ini bisa berupa membuat grafik dan bagan atau menghasilkan angka acak.</p>
+<h3 id="status-dan-alat_2">Status dan Alat</h3>
+<p>Untuk mengelola status percakapan, TaskWeaver menggunakan konsep <code>Planner</code>. <code>Planner</code> adalah LLM yang menerima permintaan dari pengguna dan memetakan tugas yang perlu diselesaikan untuk memenuhi permintaan tersebut.</p>
+<p>Untuk menyelesaikan tugas, <code>Planner</code> dikenalkan pada koleksi alat yang disebut <code>Plugins</code>. Ini bisa berupa kelas Python atau interpreter kode umum. Plugin ini disimpan sebagai embedding agar LLM dapat mencari plugin yang tepat dengan lebih baik.</p>
+<p><img alt="Taskweaver" src="../translated_images/id/taskweaver.da8559999267715a.webp" /></p>
+<p>Berikut contoh plugin untuk menangani deteksi anomali:</p>
+<pre><code class="language-python">class AnomalyDetectionPlugin(Plugin): def __call__(self, df: pd.DataFrame, time_col_name: str, value_col_name: str):
+</code></pre>
+<p>Kode diverifikasi sebelum dieksekusi. Fitur lain untuk mengelola konteks di Taskweaver adalah <code>experience</code>. Experience memungkinkan konteks percakapan disimpan dalam jangka panjang di file YAML. Ini dapat dikonfigurasi agar LLM meningkat seiring waktu pada tugas tertentu dengan paparan percakapan sebelumnya.</p>
+<h2 id="jarvis">JARVIS</h2>
+<p>Kerangka agen terakhir yang kita jelajahi adalah <a href="https://github.com/microsoft/JARVIS?tab=readme-ov-file&amp;WT.mc_id=academic-105485-koreyst">JARVIS</a>. Yang membuat JARVIS unik adalah ia menggunakan LLM untuk mengelola <code>status</code> percakapan dan <code>alat</code> adalah model AI lainnya. Setiap model AI adalah model khusus yang melakukan tugas tertentu seperti pendeteksian objek, transkripsi atau pemberian caption gambar.</p>
+<p><img alt="JARVIS" src="../translated_images/id/jarvis.762ddbadbd1a3a33.webp" /></p>
+<p>LLM, sebagai model serbaguna, menerima permintaan dari pengguna dan mengidentifikasi tugas spesifik serta argumen/data yang diperlukan untuk menyelesaikan tugas.</p>
+<pre><code class="language-python">[{&quot;task&quot;: &quot;object-detection&quot;, &quot;id&quot;: 0, &quot;dep&quot;: [-1], &quot;args&quot;: {&quot;image&quot;: &quot;e1.jpg&quot; }}]
+</code></pre>
+<p>LLM kemudian memformat permintaan dengan cara agar model AI khusus dapat menginterpretasinya, seperti JSON. Setelah model AI mengembalikan prediksi berdasarkan tugas, LLM menerima respons tersebut.</p>
+<p>Jika beberapa model diperlukan untuk menyelesaikan tugas, ia juga akan menginterpretasikan respons dari model-model tersebut sebelum menggabungkannya untuk menghasilkan respons kepada pengguna.</p>
+<p>Contoh di bawah ini menunjukkan bagaimana ini bekerja saat pengguna meminta deskripsi dan jumlah objek dalam sebuah gambar:</p>
+<h2 id="tugas">Tugas</h2>
+<p>Untuk melanjutkan pembelajaran Anda tentang Agen AI Anda dapat membangun dengan Microsoft Agent Framework:</p>
+<ul>
+<li>Sebuah aplikasi yang mensimulasikan rapat bisnis dengan berbagai departemen dari startup pendidikan.</li>
+<li>Buat pesan sistem yang memandu LLM dalam memahami persona dan prioritas berbeda, dan memungkinkan pengguna mengajukan ide produk baru.</li>
+<li>Kemudian LLM harus menghasilkan pertanyaan lanjutan dari setiap departemen untuk menyempurnakan dan meningkatkan pitch serta ide produk.</li>
+</ul>
+<h2 id="pembelajaran-tidak-berhenti-di-sini-lanjutkan-perjalanan">Pembelajaran tidak berhenti di sini, lanjutkan Perjalanan</h2>
+<p>Setelah menyelesaikan pelajaran ini, lihat <a href="https://aka.ms/genai-collection?WT.mc_id=academic-105485-koreyst">koleksi Pembelajaran Generative AI</a> kami untuk terus meningkatkan pengetahuan Generative AI Anda!</p>
+<hr />
+<!-- CO-OP TRANSLATOR DISCLAIMER START -->
+<p><strong>Penafian</strong>:<br />
+Dokumen ini telah diterjemahkan menggunakan layanan terjemahan AI <a href="https://github.com/Azure/co-op-translator">Co-op Translator</a>. Meskipun kami berupaya untuk mencapai akurasi, harap diketahui bahwa terjemahan otomatis mungkin mengandung kesalahan atau ketidakakuratan. Dokumen asli dalam bahasa aslinya harus dianggap sebagai sumber yang sah. Untuk informasi penting, disarankan menggunakan terjemahan profesional oleh manusia. Kami tidak bertanggung jawab atas kesalahpahaman atau penafsiran yang keliru yang timbul dari penggunaan terjemahan ini.</p>
+<!-- CO-OP TRANSLATOR DISCLAIMER END -->
+</body>
+</html>

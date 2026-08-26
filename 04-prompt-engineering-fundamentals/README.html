@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dasar-dasar Rekayasa Prompt</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.6; max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem;
+    color: #1f2328; background: #ffffff;
+  }
+  h1, h2, h3, h4 { line-height: 1.25; margin-top: 1.8em; }
+  h1 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  h2 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  a { color: #0969da; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; height: auto; }
+  pre {
+    background: #f6f8fa; padding: 1em; overflow-x: auto;
+    border-radius: 6px; font-size: 85%;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    background: #f6f8fa; padding: .2em .4em; border-radius: 4px; font-size: 85%;
+  }
+  pre code { background: none; padding: 0; }
+  table { border-collapse: collapse; display: block; overflow-x: auto; }
+  th, td { border: 1px solid #d1d9e0; padding: 6px 13px; }
+  th { background: #f6f8fa; }
+  blockquote {
+    border-left: 4px solid #d1d9e0; margin: 0; padding: 0 1em; color: #59636e;
+  }
+  hr { border: none; border-top: 1px solid #d1d9e0; margin: 2em 0; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e6edf3; background: #0d1117; }
+    h1, h2 { border-color: #30363d; }
+    a { color: #4493f8; }
+    pre, code, th { background: #161b22; }
+    th, td { border-color: #30363d; }
+    blockquote { border-color: #30363d; color: #9198a1; }
+    hr { border-color: #30363d; }
+  }
+</style>
+</head>
+<body>
+<h1 id="dasar-dasar-rekayasa-prompt">Dasar-dasar Rekayasa Prompt</h1>
+<h2 id="pendahuluan">Pendahuluan</h2>
+<p>Modul ini membahas konsep dan teknik penting untuk membuat prompt yang efektif dalam model AI generatif. Cara Anda menulis prompt kepada LLM juga penting. Prompt yang dibuat dengan cermat dapat menghasilkan respons yang lebih berkualitas. Tetapi apa sebenarnya arti istilah seperti <em>prompt</em> dan <em>rekayasa prompt</em>? Dan bagaimana saya dapat meningkatkan <em>input</em> prompt yang saya kirim ke LLM? Pertanyaan-pertanyaan ini akan kita coba jawab dalam bab ini dan bab berikutnya.</p>
+<p><em>AI Generatif</em> mampu menciptakan konten baru (misalnya, teks, gambar, audio, kode, dll.) sebagai respons terhadap permintaan pengguna. Hal ini dicapai dengan menggunakan <em>Model Bahasa Besar</em> seperti seri GPT ("Generative Pre-trained Transformer") dari OpenAI yang dilatih menggunakan bahasa alami dan kode.</p>
+<p>Pengguna kini dapat berinteraksi dengan model-model ini menggunakan paradigma yang familier seperti chat, tanpa memerlukan keahlian teknis atau pelatihan. Model tersebut <em>berbasis prompt</em> - pengguna mengirimkan input teks (prompt) dan menerima tanggapan AI (penyelesaian). Mereka kemudian dapat "mengobrol dengan AI" secara iteratif, dalam percakapan multi-putaran, menyempurnakan prompt mereka hingga respons memenuhi harapan mereka.</p>
+<p>"Prompt" kini menjadi <em>antarmuka pemrograman</em> utama untuk aplikasi AI generatif, memberi tahu model apa yang harus dilakukan dan memengaruhi kualitas respons yang dikembalikan. "Rekayasa Prompt" adalah bidang studi yang berkembang pesat yang berfokus pada <em>perancangan dan pengoptimalan</em> prompt untuk menghasilkan respons yang konsisten dan berkualitas dalam skala besar.</p>
+<h2 id="tujuan-pembelajaran">Tujuan Pembelajaran</h2>
+<p>Dalam pelajaran ini, kita akan belajar apa itu Rekayasa Prompt, mengapa hal itu penting, dan bagaimana kita dapat merancang prompt yang lebih efektif untuk model dan tujuan aplikasi tertentu. Kita akan memahami konsep inti dan praktik terbaik dalam rekayasa prompt - serta belajar tentang lingkungan "sandbox" interaktif Jupyter Notebooks di mana konsep-konsep ini dapat diterapkan pada contoh nyata.</p>
+<p>Pada akhir pelajaran ini kita akan dapat:</p>
+<ol>
+<li>Menjelaskan apa itu rekayasa prompt dan mengapa itu penting.</li>
+<li>Mendeskripsikan komponen prompt dan bagaimana mereka digunakan.</li>
+<li>Mempelajari praktik terbaik dan teknik rekayasa prompt.</li>
+<li>Menerapkan teknik yang dipelajari pada contoh nyata, menggunakan endpoint OpenAI.</li>
+</ol>
+<h2 id="istilah-kunci">Istilah Kunci</h2>
+<p>Rekayasa Prompt: Praktik merancang dan menyempurnakan input untuk mengarahkan model AI agar menghasilkan output yang diinginkan.<br />
+Tokenisasi: Proses mengubah teks menjadi unit-unit lebih kecil, yang disebut token, yang dapat dipahami dan diproses oleh model.<br />
+LLM yang Disetel Instruksi: Model Bahasa Besar (LLM) yang telah disetel dengan instruksi spesifik untuk meningkatkan akurasi dan relevansi responsnya.</p>
+<h2 id="sandbox-pembelajaran">Sandbox Pembelajaran</h2>
+<p>Rekayasa prompt saat ini lebih merupakan seni daripada ilmu. Cara terbaik untuk meningkatkan intuisi kita adalah dengan <em>berlatih lebih banyak</em> dan mengadopsi pendekatan coba-coba yang menggabungkan keahlian domain aplikasi dengan teknik yang direkomendasikan dan pengoptimalan khusus model.</p>
+<p>Jupyter Notebook yang menyertai pelajaran ini menyediakan lingkungan <em>sandbox</em> di mana Anda dapat mencoba apa yang Anda pelajari - sambil berjalan atau sebagai bagian dari tantangan kode di akhir. Untuk menjalankan latihan, Anda memerlukan:</p>
+<ol>
+<li><strong>Kunci API Azure OpenAI</strong> - endpoint layanan untuk LLM yang sudah dipasang.</li>
+<li><strong>Runtime Python</strong> - tempat di mana Notebook dapat dijalankan.</li>
+<li><strong>Variabel Lingkungan Lokal</strong> - <em>selesaikan langkah-langkah <a href="./../00-course-setup/02-setup-local.html?WT.mc_id=academic-105485-koreyst">SETUP</a> sekarang untuk bersiap-siap</em>.</li>
+</ol>
+<p>Notebook ini dilengkapi dengan latihan <em>starter</em> - tapi Anda didorong untuk menambahkan bagian <em>Markdown</em> (deskripsi) dan <em>Code</em> (permintaan prompt) Anda sendiri untuk mencoba lebih banyak contoh atau ide - dan membangun intuisi Anda tentang desain prompt.</p>
+<h2 id="panduan-bergambar">Panduan Bergambar</h2>
+<p>Ingin mendapatkan gambaran besar tentang apa yang dibahas pelajaran ini sebelum Anda menyelam masuk? Lihat panduan bergambar ini, yang memberi Anda pemahaman tentang topik utama yang dibahas dan poin-poin kunci untuk dipikirkan dalam setiap topik. Roadmap pelajaran membawa Anda dari pemahaman konsep inti dan tantangan hingga mengatasinya dengan teknik rekayasa prompt dan praktik terbaik yang relevan. Perhatikan bahwa bagian "Teknik Lanjutan" dalam panduan ini merujuk pada konten yang dibahas dalam bab <em>berikutnya</em> dari kurikulum ini.</p>
+<p><img alt="Panduan Bergambar untuk Rekayasa Prompt" src="../translated_images/id/04-prompt-engineering-sketchnote.d5f33336957a1e4f.webp" /></p>
+<h2 id="startup-kami">Startup Kami</h2>
+<p>Sekarang, mari kita bicarakan bagaimana <em>topik ini</em> terkait dengan misi startup kami untuk <a href="https://educationblog.microsoft.com/2023/06/collaborating-to-bring-ai-innovation-to-education?WT.mc_id=academic-105485-koreyst">membawa inovasi AI ke pendidikan</a>. Kami ingin membangun aplikasi bertenaga AI untuk <em>pembelajaran yang dipersonalisasi</em> - jadi mari kita pikirkan bagaimana pengguna berbeda dari aplikasi kami mungkin "merancang" prompt:</p>
+<ul>
+<li><strong>Administrator</strong> mungkin meminta AI untuk <em>menganalisis data kurikulum guna mengidentifikasi kekurangan dalam cakupan</em>. AI dapat meringkas hasil atau memvisualisasikannya dengan kode.</li>
+<li><strong>Pendidik</strong> mungkin meminta AI untuk <em>menghasilkan rencana pelajaran untuk audiens dan topik tertentu</em>. AI dapat membangun rencana personalisasi dalam format yang ditentukan.</li>
+<li><strong>Siswa</strong> mungkin meminta AI untuk <em>membimbing mereka dalam mata pelajaran yang sulit</em>. AI kini dapat membimbing siswa dengan pelajaran, petunjuk &amp; contoh yang disesuaikan dengan tingkat mereka.</li>
+</ul>
+<p>Itu baru permulaan. Lihat <a href="https://github.com/microsoft/prompts-for-edu/tree/main?WT.mc_id=academic-105485-koreyst">Prompts For Education</a> - perpustakaan prompt open-source yang dikurasi oleh para ahli pendidikan - untuk mendapatkan gambaran lebih luas tentang kemungkinannya! <em>Cobalah menjalankan beberapa prompt tersebut di sandbox atau menggunakan OpenAI Playground untuk melihat apa yang terjadi!</em></p>
+<!--
+TEMPLATE PELAJARAN:
+Unit ini harus membahas konsep inti #1.
+Perkuat konsep dengan contoh dan referensi.
+
+KONSEP #1:
+Rekayasa Prompt.
+Definisikan dan jelaskan mengapa itu diperlukan.
+-->
+
+<h2 id="apa-itu-rekayasa-prompt">Apa itu Rekayasa Prompt?</h2>
+<p>Kita memulai pelajaran ini dengan mendefinisikan <strong>Rekayasa Prompt</strong> sebagai proses <em>merancang dan mengoptimalkan</em> input teks (prompt) untuk menghasilkan respons (penyelesaian) yang konsisten dan berkualitas sesuai tujuan aplikasi dan model tertentu. Kita bisa menganggap ini sebagai proses dua langkah:</p>
+<ul>
+<li><em>merancang</em> prompt awal untuk model dan tujuan tertentu</li>
+<li><em>menyempurnakan</em> prompt secara iteratif untuk meningkatkan kualitas respons</li>
+</ul>
+<p>Ini adalah proses coba-coba yang memerlukan intuisi pengguna dan upaya untuk mendapatkan hasil optimal. Jadi mengapa ini penting? Untuk menjawab pertanyaan itu, kita perlu memahami tiga konsep:</p>
+<ul>
+<li><em>Tokenisasi</em> = bagaimana model "melihat" prompt</li>
+<li><em>Base LLMs</em> = bagaimana model dasar "memproses" prompt</li>
+<li><em>Instruction-Tuned LLMs</em> = bagaimana model kini dapat melihat "tugas"</li>
+</ul>
+<h3 id="tokenisasi">Tokenisasi</h3>
+<p>Sebuah LLM melihat prompt sebagai <em>urutan token</em> di mana model yang berbeda (atau versi model) dapat meng-tokenisasi prompt yang sama dengan cara berbeda. Karena LLM dilatih berdasarkan token (bukan teks mentah), cara prompt di-tokenisasi berpengaruh langsung pada kualitas respons yang dihasilkan.</p>
+<p>Untuk mendapatkan intuisi tentang cara kerja tokenisasi, coba alat seperti <a href="https://platform.openai.com/tokenizer?WT.mc_id=academic-105485-koreyst">OpenAI Tokenizer</a> yang ditunjukkan di bawah. Salin prompt Anda - dan lihat bagaimana prompt tersebut diubah menjadi token, perhatikan bagaimana karakter spasi dan tanda baca ditangani. Perlu dicatat bahwa contoh ini menunjukkan LLM yang lebih lama (GPT-3) - jadi mencoba ini dengan model yang lebih baru mungkin menghasilkan hasil yang berbeda.</p>
+<p><img alt="Tokenisasi" src="../translated_images/id/04-tokenizer-example.e71f0a0f70356c5c.webp" /></p>
+<h3 id="konsep-model-fondasi">Konsep: Model Fondasi</h3>
+<p>Setelah prompt di-tokenisasi, fungsi utama <a href="https://blog.gopenai.com/an-introduction-to-base-and-instruction-tuned-large-language-models-8de102c785a6?WT.mc_id=academic-105485-koreyst">"Base LLM"</a> (atau model fondasi) adalah memprediksi token berikutnya dalam urutan itu. Karena LLM dilatih pada dataset teks besar, mereka memiliki pemahaman statistik yang baik tentang hubungan antar token dan dapat membuat prediksi dengan tingkat keyakinan tertentu. Perlu dicatat bahwa mereka tidak memahami <em>makna</em> dari kata-kata dalam prompt atau token; mereka hanya melihat pola yang dapat mereka "selesaikan" dengan prediksi berikutnya. Mereka dapat terus memprediksi urutan hingga dihentikan oleh intervensi pengguna atau kondisi yang telah ditentukan.</p>
+<p>Ingin melihat bagaimana penyelesaian berbasis prompt bekerja? Masukkan prompt di atas ke <a href="https://ai.azure.com?WT.mc_id=academic-105485-koreyst">Microsoft Foundry playground</a> dengan pengaturan default. Sistem dikonfigurasi untuk memperlakukan prompt sebagai permintaan informasi - jadi Anda akan melihat penyelesaian yang sesuai dengan konteks ini.</p>
+<p>Tapi bagaimana jika pengguna ingin melihat sesuatu yang spesifik yang memenuhi kriteria atau tujuan tugas tertentu? Di sinilah LLM yang <em>disetel instruksi</em> masuk ke gambar.</p>
+<p><img alt="Base LLM Chat Completion" src="../translated_images/id/04-playground-chat-base.65b76fcfde0caa67.webp" /></p>
+<h3 id="konsep-llm-yang-disetel-instruksi">Konsep: LLM yang Disetel Instruksi</h3>
+<p>Sebuah <a href="https://blog.gopenai.com/an-introduction-to-base-and-instruction-tuned-large-language-models-8de102c785a6?WT.mc_id=academic-105485-koreyst">Instruction Tuned LLM</a> dimulai dengan model fondasi dan menyetel ulang dengan contoh atau pasangan input/output (misalnya, "pesan" multi-putaran) yang dapat berisi instruksi jelas - dan respons dari AI berusaha mengikuti instruksi tersebut.</p>
+<p>Ini menggunakan teknik seperti Reinforcement Learning with Human Feedback (RLHF) yang dapat melatih model untuk <em>mengikuti instruksi</em> dan <em>belajar dari umpan balik</em> sehingga menghasilkan respons yang lebih cocok untuk aplikasi praktis dan lebih relevan dengan tujuan pengguna.</p>
+<p>Mari coba - ulangi prompt di atas, tetapi sekarang ubah <em>pesan sistem</em> untuk memberikan instruksi berikut sebagai konteks:</p>
+<blockquote>
+<p><em>Ringkas konten yang Anda berikan untuk siswa kelas dua. Batasi hasilnya menjadi satu paragraf dengan 3-5 poin peluru.</em></p>
+</blockquote>
+<p>Lihat bagaimana hasilnya kini disesuaikan untuk mencerminkan tujuan dan format yang diinginkan? Seorang pendidik dapat langsung menggunakan respons ini dalam slide mereka untuk kelas tersebut.</p>
+<p><img alt="Instruction Tuned LLM Chat Completion" src="../translated_images/id/04-playground-chat-instructions.b30bbfbdf92f2d05.webp" /></p>
+<h2 id="mengapa-kita-membutuhkan-rekayasa-prompt">Mengapa kita membutuhkan Rekayasa Prompt?</h2>
+<p>Sekarang kita tahu bagaimana prompt diproses oleh LLM, mari kita bahas <em>mengapa</em> kita membutuhkan rekayasa prompt. Jawabannya terletak pada fakta bahwa LLM saat ini menghadapi sejumlah tantangan yang membuat <em>penyelesaian yang dapat diandalkan dan konsisten</em> sulit diperoleh tanpa usaha dalam konstruksi dan pengoptimalan prompt. Misalnya:</p>
+<ol>
+<li>
+<p><strong>Respons model bersifat stokastik.</strong> <em>Prompt yang sama</em> kemungkinan akan menghasilkan respons berbeda dengan model atau versi model yang berbeda. Dan bahkan dapat menghasilkan hasil berbeda dengan <em>model yang sama</em> pada waktu yang berbeda. <em>Teknik rekayasa prompt dapat membantu meminimalkan variasi ini dengan menyediakan pembatas yang lebih baik</em>.</p>
+</li>
+<li>
+<p><strong>Model dapat membuat respons palsu.</strong> Model dilatih dengan dataset <em>besar tapi terbatas</em>, artinya mereka tidak mengetahui konsep di luar ruang lingkup pelatihan tersebut. Akibatnya, mereka dapat menghasilkan penyelesaian yang tidak akurat, imajinatif, atau bahkan bertentangan langsung dengan fakta yang diketahui. <em>Teknik rekayasa prompt membantu pengguna mengidentifikasi dan mengatasi fabrikasi semacam itu, misalnya dengan meminta AI untuk menyertakan kutipan atau alasan</em>.</p>
+</li>
+<li>
+<p><strong>Kemampuan model akan bervariasi.</strong> Model atau generasi model terbaru akan memiliki kemampuan lebih kaya namun juga membawa keunikan dan kompromi dalam biaya &amp; kompleksitas. <em>Rekayasa prompt dapat membantu kita mengembangkan praktik terbaik dan alur kerja yang mengabstraksi perbedaan dan beradaptasi dengan kebutuhan spesifik model secara skala besar dan mulus</em>.</p>
+</li>
+</ol>
+<p>Mari lihat ini dalam aksi di OpenAI atau Azure OpenAI Playground:</p>
+<ul>
+<li>Gunakan prompt yang sama dengan deployment LLM berbeda (misal, OpenAI, Azure OpenAI, Hugging Face) - apakah Anda melihat variasinya?</li>
+<li>Gunakan prompt yang sama berulang kali dengan <em>deployment</em> LLM yang <em>sama</em> (misal, playground Azure OpenAI) - bagaimana variasi tersebut berbeda?</li>
+</ul>
+<h3 id="contoh-fabrikasi">Contoh Fabrikasi</h3>
+<p>Dalam kursus ini, kami menggunakan istilah <strong>"fabrikasi"</strong> untuk merujuk pada fenomena di mana LLM kadang menghasilkan informasi yang secara faktual salah karena keterbatasan pelatihan atau kendala lainnya. Anda mungkin juga pernah mendengar ini disebut sebagai <em>"halusinasi"</em> dalam artikel populer atau makalah riset. Namun, kami sangat menyarankan menggunakan istilah <em>"fabrikasi"</em> agar kita tidak keliru memberikannya sifat manusiawi pada hasil mesin. Ini juga memperkuat <a href="https://www.microsoft.com/ai/responsible-ai?WT.mc_id=academic-105485-koreyst">panduan AI yang Bertanggung Jawab</a> dari sudut pandang terminologi, menghapus istilah yang mungkin dianggap ofensif atau tidak inklusif dalam beberapa konteks.</p>
+<p>Ingin merasakan bagaimana fabrikasi bekerja? Pikirkan sebuah prompt yang menginstruksikan AI untuk membuat konten tentang topik yang tidak ada (agar tidak ditemukan dalam dataset pelatihan). Misalnya - saya mencoba prompt ini:</p>
+<blockquote>
+<p><strong>Prompt:</strong> buat rencana pelajaran tentang Perang Mars pada tahun 2076.</p>
+</blockquote>
+<p>Pencarian web menunjukkan bahwa ada cerita fiksi (misalnya, seri televisi atau buku) tentang perang Mars - tapi tidak ada yang terjadi pada tahun 2076. Akal sehat juga memberitahu kita bahwa 2076 adalah <em>masa depan</em> sehingga tidak bisa dikaitkan dengan peristiwa nyata.</p>
+<p>Jadi apa yang terjadi ketika kita menjalankan prompt ini dengan penyedia LLM yang berbeda?</p>
+<blockquote>
+<p><strong>Respon 1</strong>: OpenAI Playground (GPT-35)</p>
+</blockquote>
+<p><img alt="Respon 1" src="../translated_images/id/04-fabrication-oai.5818c4e0b2a2678c.webp" /></p>
+<blockquote>
+<p><strong>Respon 2</strong>: Azure OpenAI Playground (GPT-35)</p>
+</blockquote>
+<p><img alt="Respon 2" src="../translated_images/id/04-fabrication-aoai.b14268e9ecf25caf.webp" /></p>
+<blockquote>
+<p><strong>Respon 3</strong>: : Hugging Face Chat Playground (LLama-2)</p>
+</blockquote>
+<p><img alt="Respon 3" src="../translated_images/id/04-fabrication-huggingchat.faf82a0a51278956.webp" /></p>
+<p>Seperti yang diharapkan, setiap model (atau versi model) menghasilkan respon yang sedikit berbeda berkat perilaku stokastik dan variasi kemampuan model. Misalnya, satu model menargetkan audiens kelas 8 sementara yang lain mengasumsikan siswa sekolah menengah. Namun ketiga model tersebut menghasilkan respon yang dapat meyakinkan pengguna yang tidak terinformasi bahwa peristiwa tersebut nyata.</p>
+<p>Teknik rekayasa prompt seperti <em>metaprompting</em> dan <em>konfigurasi temperature</em> dapat mengurangi fabrikasi model sampai tingkat tertentu. Arsitektur rekayasa prompt baru juga memasukkan alat dan teknik baru secara mulus ke dalam alur prompt, untuk mengurangi atau memitigasi beberapa efek tersebut.</p>
+<h2 id="studi-kasus-github-copilot">Studi Kasus: GitHub Copilot</h2>
+<p>Mari kita tutup bagian ini dengan mendapatkan gambaran tentang bagaimana rekayasa prompt digunakan dalam solusi dunia nyata dengan melihat satu Studi Kasus: <a href="https://github.com/features/copilot?WT.mc_id=academic-105485-koreyst">GitHub Copilot</a>.</p>
+<p>GitHub Copilot adalah "Pasangan Pemrogram AI" Anda - mengubah prompt teks menjadi penyelesaian kode dan terintegrasi dalam lingkungan pengembangan Anda (misalnya, Visual Studio Code) untuk pengalaman pengguna yang mulus. Seperti yang didokumentasikan dalam rangkaian blog di bawah ini, versi awalnya didasarkan pada model OpenAI Codex - dengan insinyur yang dengan cepat menyadari kebutuhan untuk menyempurnakan model dan mengembangkan teknik rekayasa prompt yang lebih baik, untuk meningkatkan kualitas kode. Pada bulan Juli, mereka <a href="https://github.blog/2023-07-28-smarter-more-efficient-coding-github-copilot-goes-beyond-codex-with-improved-ai-model/?WT.mc_id=academic-105485-koreyst">memperkenalkan model AI yang ditingkatkan yang melampaui Codex</a> untuk saran yang lebih cepat.</p>
+<p>Baca postingan secara berurutan, untuk mengikuti perjalanan pembelajaran mereka.</p>
+<ul>
+<li><strong>Mei 2023</strong> | <a href="https://github.blog/2023-05-17-how-github-copilot-is-getting-better-at-understanding-your-code/?WT.mc_id=academic-105485-koreyst">GitHub Copilot Semakin Baik Memahami Kode Anda</a></li>
+<li><strong>Mei 2023</strong> | <a href="https://github.blog/2023-05-17-inside-github-working-with-the-llms-behind-github-copilot/?WT.mc_id=academic-105485-koreyst">Inside GitHub: Bekerja dengan LLM di balik GitHub Copilot</a>.</li>
+<li><strong>Jun 2023</strong> | <a href="https://github.blog/2023-06-20-how-to-write-better-prompts-for-github-copilot/?WT.mc_id=academic-105485-koreyst">Cara menulis prompt yang lebih baik untuk GitHub Copilot</a>.</li>
+<li><strong>Jul 2023</strong> | <a href="https://github.blog/2023-07-28-smarter-more-efficient-coding-github-copilot-goes-beyond-codex-with-improved-ai-model/?WT.mc_id=academic-105485-koreyst">.. GitHub Copilot melampaui Codex dengan model AI yang ditingkatkan</a></li>
+<li><strong>Jul 2023</strong> | <a href="https://github.blog/2023-07-17-prompt-engineering-guide-generative-ai-llms/?WT.mc_id=academic-105485-koreyst">Panduan Pengembang untuk Rekayasa Prompt dan LLM</a></li>
+<li><strong>Sep 2023</strong> | <a href="https://github.blog/2023-09-06-how-to-build-an-enterprise-llm-application-lessons-from-github-copilot/?WT.mc_id=academic-105485-koreyst">Cara membangun aplikasi LLM perusahaan: Pelajaran dari GitHub Copilot</a></li>
+</ul>
+<p>Anda juga dapat menjelajahi <a href="https://github.blog/category/engineering/?WT.mc_id=academic-105485-koreyst">blog Rekayasa mereka</a> untuk lebih banyak posting seperti <a href="https://github.blog/2023-09-27-how-i-used-github-copilot-chat-to-build-a-reactjs-gallery-prototype/?WT.mc_id=academic-105485-koreyst">ini</a> yang menunjukkan bagaimana model dan teknik ini <em>diterapkan</em> untuk mendorong aplikasi dunia nyata.</p>
+<hr />
+<!--
+TEMPLATE PELAJARAN:
+Unit ini harus mencakup konsep inti #2.
+Perkuat konsep dengan contoh dan referensi.
+
+KONSEP #2:
+Desain Prompt.
+Diilustrasikan dengan contoh.
+-->
+
+<h2 id="konstruksi-prompt">Konstruksi Prompt</h2>
+<p>Kita telah melihat mengapa rekayasa prompt itu penting - sekarang mari kita pahami bagaimana prompt <em>dibangun</em> sehingga kita dapat mengevaluasi berbagai teknik untuk desain prompt yang lebih efektif.</p>
+<h3 id="prompt-dasar">Prompt Dasar</h3>
+<p>Mari mulai dengan prompt dasar: input teks yang dikirim ke model tanpa konteks lain. Berikut contohnya - ketika kita mengirimkan beberapa kata pertama dari lagu kebangsaan AS ke OpenAI <a href="https://platform.openai.com/docs/api-reference/completions?WT.mc_id=academic-105485-koreyst">Completion API</a> model langsung <em>melengkapi</em> respon dengan beberapa baris berikutnya, menggambarkan perilaku prediksi dasar.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Prompt (Input)</th>
+<th style="text-align: left;">Penyelesaian (Output)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Oh say can you see</td>
+<td style="text-align: left;">Kelihatannya kamu mulai menyanyikan lirik "The Star-Spangled Banner," lagu kebangsaan Amerika Serikat. Lirik lengkapnya adalah ...</td>
+</tr>
+</tbody>
+</table>
+<h3 id="prompt-kompleks">Prompt Kompleks</h3>
+<p>Sekarang mari tambahkan konteks dan instruksi ke prompt dasar tersebut. <a href="https://learn.microsoft.com/azure/ai-services/openai/how-to/chatgpt?WT.mc_id=academic-105485-koreyst">Chat Completion API</a> memungkinkan kita membangun prompt kompleks sebagai kumpulan <em>pesan</em> dengan:</p>
+<ul>
+<li>Pasangan input/output yang mencerminkan input <em>pengguna</em> dan respon <em>asisten</em>.</li>
+<li>Pesan sistem yang menetapkan konteks untuk perilaku atau kepribadian asisten.</li>
+</ul>
+<p>Permintaan sekarang dalam bentuk di bawah ini, di mana <em>tokenisasi</em> secara efektif menangkap informasi relevan dari konteks dan percakapan. Kini, mengubah konteks sistem dapat sepenting kualitas penyelesaian, seperti juga input pengguna yang diberikan.</p>
+<pre><code class="language-python">response = client.responses.create(
+    model=&quot;gpt-4o-mini&quot;,
+    input=[
+        {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;You are a helpful assistant.&quot;},
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Who won the world series in 2020?&quot;},
+        {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;The Los Angeles Dodgers won the World Series in 2020.&quot;},
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Where was it played?&quot;}
+    ]
+)
+</code></pre>
+<h3 id="prompt-instruksi">Prompt Instruksi</h3>
+<p>Dalam contoh di atas, prompt pengguna adalah kueri teks sederhana yang dapat diartikan sebagai permintaan informasi. Dengan prompt <em>instruksi</em>, kita dapat menggunakan teks tersebut untuk menentukan tugas secara lebih rinci, memberikan panduan yang lebih baik kepada AI. Berikut contohnya:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Prompt (Input)</th>
+<th style="text-align: left;">Penyelesaian (Output)</th>
+<th style="text-align: left;">Jenis Instruksi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Tulislah deskripsi Perang Saudara</td>
+<td style="text-align: left;"><em>mengembalikan paragraf sederhana</em></td>
+<td style="text-align: left;">Sederhana</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tulislah deskripsi Perang Saudara. Berikan tanggal dan peristiwa kunci serta jelaskan pentingnya</td>
+<td style="text-align: left;"><em>mengembalikan paragraf diikuti daftar tanggal peristiwa penting dengan deskripsi</em></td>
+<td style="text-align: left;">Kompleks</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tulislah deskripsi Perang Saudara dalam 1 paragraf. Berikan 3 poin dengan tanggal dan pentingnya. Berikan 3 poin lagi dengan tokoh sejarah utama dan kontribusinya. Kembalikan hasil sebagai file JSON</td>
+<td style="text-align: left;"><em>mengembalikan detail lebih luas dalam kotak teks, diformat sebagai JSON yang bisa Anda salin-tempel ke file dan validasi sesuai kebutuhan</em></td>
+<td style="text-align: left;">Kompleks. Diformat.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="konten-utama">Konten Utama</h2>
+<p>Dalam contoh di atas, prompt masih cukup terbuka, membiarkan LLM memilih bagian dataset latihannya yang relevan. Dengan pola desain <em>konten utama</em>, teks input dibagi menjadi dua bagian:</p>
+<ul>
+<li>sebuah instruksi (aksi)</li>
+<li>konten relevan (yang mempengaruhi aksi)</li>
+</ul>
+<p>Berikut contohnya di mana instruksinya adalah "ringkas ini dalam 2 kalimat".</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Prompt (Input)</th>
+<th style="text-align: left;">Penyelesaian (Output)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Jupiter adalah planet kelima dari Matahari dan terbesar di Tata Surya. Ini adalah raksasa gas dengan massa seribu kali lebih kecil dari Matahari, namun dua setengah kali massa semua planet lain di Tata Surya digabungkan. Jupiter adalah salah satu objek paling terang yang terlihat mata telanjang di langit malam, dan dikenal oleh peradaban kuno sejak sebelum sejarah tercatat. Dinamakan dari dewa Romawi Jupiter.[19] Saat dilihat dari Bumi, Jupiter bisa cukup terang sehingga cahaya pantulannya dapat memunculkan bayangan yang terlihat,[20] dan rata-rata merupakan objek alami ketiga terterang di langit malam setelah Bulan dan Venus. <br/> <strong>Ringkas ini dalam 2 kalimat singkat</strong></td>
+<td style="text-align: left;">Jupiter, planet kelima dari Matahari, adalah yang terbesar di Tata Surya dan dikenal sebagai salah satu objek paling terang di langit malam. Dinamakan dari dewa Romawi Jupiter, itu adalah raksasa gas dengan massa dua setengah kali dari semua planet lain di Tata Surya digabungkan.</td>
+</tr>
+</tbody>
+</table>
+<p>Segmen konten utama dapat digunakan dengan berbagai cara untuk mendorong instruksi yang lebih efektif:</p>
+<ul>
+<li><strong>Contoh</strong> - bukan memberitahu model apa yang harus dilakukan dengan instruksi eksplisit, berikan contoh apa yang harus dilakukan dan biarkan ia menebak pola.</li>
+<li><strong>Isyarat</strong> - ikuti instruksi dengan "isyarat" yang memicu penyelesaian, mengarahkan model ke respon yang lebih relevan.</li>
+<li><strong>Template</strong> - ini adalah 'resep' berulang untuk prompt dengan placeholder (variabel) yang bisa disesuaikan dengan data untuk kasus penggunaan tertentu.</li>
+</ul>
+<p>Mari kita jelajahi ini dalam praktek.</p>
+<h3 id="menggunakan-contoh">Menggunakan Contoh</h3>
+<p>Ini adalah pendekatan di mana Anda menggunakan konten utama untuk "memberi makan model" beberapa contoh output yang diinginkan untuk instruksi tertentu, dan membiarkannya menebak pola output yang diinginkan. Berdasarkan jumlah contoh yang diberikan, kita dapat memiliki prompting nol tembakan, satu tembakan, beberapa tembakan, dll.</p>
+<p>Prompt sekarang terdiri dari tiga komponen:</p>
+<ul>
+<li>Deskripsi tugas</li>
+<li>Beberapa contoh output yang diinginkan</li>
+<li>Awal contoh baru (yang menjadi deskripsi tugas implisit)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Jenis Pembelajaran</th>
+<th style="text-align: left;">Prompt (Input)</th>
+<th style="text-align: left;">Penyelesaian (Output)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Nol tembakan</td>
+<td style="text-align: left;">"The Sun is Shining". Terjemahkan ke dalam bahasa Spanyol</td>
+<td style="text-align: left;">"El Sol está brillando".</td>
+</tr>
+<tr>
+<td style="text-align: left;">Satu tembakan</td>
+<td style="text-align: left;">"The Sun is Shining" =&gt; ""El Sol está brillando". <br> "It's a Cold and Windy Day" =&gt;</td>
+<td style="text-align: left;">"Es un día frío y ventoso".</td>
+</tr>
+<tr>
+<td style="text-align: left;">Beberapa tembakan</td>
+<td style="text-align: left;">The player ran the bases =&gt; Baseball <br/> The player hit an ace =&gt; Tennis <br/> The player hit a six =&gt; Cricket <br/> The player made a slam-dunk =&gt;</td>
+<td style="text-align: left;">Basketball</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<p>Perhatikan bagaimana kita harus memberikan instruksi eksplisit ("Terjemahkan ke Spanyol") dalam prompting nol tembakan, tapi itu ditangkap secara implisit dalam contoh satu tembakan. Contoh beberapa tembakan menunjukkan bagaimana menambahkan lebih banyak contoh memungkinkan model membuat inferensi yang lebih akurat tanpa instruksi tambahan.</p>
+<h3 id="isyarat-prompt">Isyarat Prompt</h3>
+<p>Teknik lain untuk menggunakan konten utama adalah memberikan <em>isyarat</em> alih-alih contoh. Dalam kasus ini, kita memberi dorongan kepada model dengan <em>memulainya</em> dengan cuplikan yang mencerminkan format jawaban yang diinginkan. Model kemudian "mengikuti isyarat" tersebut untuk melanjutkan dengan pola yang sama.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Jumlah Isyarat</th>
+<th style="text-align: left;">Prompt (Input)</th>
+<th style="text-align: left;">Penyelesaian (Output)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">Jupiter adalah planet kelima dari Matahari dan terbesar di Tata Surya. Ini adalah raksasa gas dengan massa seribu kali lebih kecil dari Matahari, namun dua setengah kali massa semua planet lain di Tata Surya digabungkan. Jupiter adalah salah satu objek paling terang yang terlihat mata telanjang di langit malam, dan dikenal oleh peradaban kuno sejak sebelum sejarah tercatat. <br/><strong>Ringkas Ini</strong></td>
+<td style="text-align: left;">Jupiter adalah planet terbesar di Tata Surya kita dan yang kelima dari Matahari. Ia adalah raksasa gas dengan massa 1/1000 dari Matahari, tapi lebih berat daripada semua planet lain digabungkan. Peradaban kuno telah lama mengenal Jupiter, dan planet ini mudah terlihat di langit malam.</td>
+</tr>
+<tr>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">Jupiter adalah planet kelima dari Matahari dan terbesar di Tata Surya. Ini adalah raksasa gas dengan massa seribu kali lebih kecil dari Matahari, namun dua setengah kali massa semua planet lain di Tata Surya digabungkan. Jupiter adalah salah satu objek paling terang yang terlihat mata telanjang di langit malam, dan dikenal oleh peradaban kuno sejak sebelum sejarah tercatat. <br/><strong>Ringkas Ini</strong> <br/> Apa yang kita pelajari adalah bahwa Jupiter</td>
+<td style="text-align: left;">adalah planet kelima dari Matahari dan terbesar di Tata Surya. Ini adalah raksasa gas dengan massa seribu kali lebih kecil dari Matahari, namun dua setengah kali massa semua planet lain digabungkan. Ia mudah terlihat dengan mata telanjang dan telah dikenal sejak zaman kuno.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>2</th>
+<th>Jupiter adalah planet kelima dari Matahari dan terbesar di Tata Surya. Ia adalah raksasa gas dengan massa seper seribu dari Matahari, tetapi dua setengah kali massa semua planet lain di Tata Surya jika digabungkan. Jupiter adalah salah satu objek paling terang yang terlihat dengan mata telanjang di langit malam, dan telah dikenal oleh peradaban kuno sejak sebelum sejarah tercatat. <br/><strong>Ringkas Ini</strong> <br/> 3 Fakta Teratas yang Kami Pelajari:</th>
+<th>1. Jupiter adalah planet kelima dari Matahari dan terbesar di Tata Surya. <br/> 2. Ia adalah raksasa gas dengan massa seper seribu dari Matahari...<br/> 3. Jupiter telah terlihat dengan mata telanjang sejak zaman kuno ...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="prompt-templates">Prompt Templates</h3>
+<p>Template prompt adalah <em>resep yang telah ditentukan sebelumnya untuk sebuah prompt</em> yang dapat disimpan dan digunakan kembali sesuai kebutuhan, untuk mengarahkan pengalaman pengguna yang lebih konsisten dalam skala besar. Dalam bentuk paling sederhana, ini hanyalah kumpulan contoh prompt seperti <a href="https://cookbook.openai.com/examples/gpt4-1_prompting_guide?WT.mc_id=academic-105485-koreyst">yang satu ini dari OpenAI</a> yang menyediakan komponen prompt interaktif (pesan pengguna dan sistem) serta format permintaan yang didorong oleh API - untuk mendukung penggunaan ulang.</p>
+<p>Dalam bentuk yang lebih kompleks seperti <a href="https://python.langchain.com/docs/concepts/prompt_templates/?WT.mc_id=academic-105485-koreyst">contoh ini dari LangChain</a> berisi <em>placeholder</em> yang dapat diganti dengan data dari berbagai sumber (masukan pengguna, konteks sistem, sumber data eksternal, dll.) untuk menghasilkan prompt secara dinamis. Ini memungkinkan kita membuat perpustakaan prompt yang dapat digunakan kembali yang dapat digunakan untuk mengarahkan pengalaman pengguna yang konsisten secara <strong>programatik</strong> dalam skala.</p>
+<p>Akhirnya, nilai sesungguhnya dari template terletak pada kemampuannya untuk membuat dan menerbitkan <em>perpustakaan prompt</em> untuk domain aplikasi vertikal - di mana template prompt sekarang <em>dioptimalkan</em> untuk mencerminkan konteks atau contoh khusus aplikasi yang membuat tanggapan lebih relevan dan akurat untuk audiens pengguna yang ditargetkan. Repositori <a href="https://github.com/microsoft/prompts-for-edu?WT.mc_id=academic-105485-koreyst">Prompts For Edu</a> adalah contoh hebat dari pendekatan ini, mengkurasi perpustakaan prompt untuk domain pendidikan dengan penekanan pada tujuan utama seperti perencanaan pelajaran, desain kurikulum, pembimbingan siswa, dll.</p>
+<h2 id="supporting-content">Supporting Content</h2>
+<p>Jika kita memikirkan konstruksi prompt sebagai memiliki instruksi (tugas) dan target (konten utama), maka <em>konten sekunder</em> seperti konteks tambahan yang kita berikan untuk <strong>mempengaruhi keluaran dengan cara tertentu</strong>. Bisa berupa parameter pengaturan, instruksi format, taksonomi topik, dll. yang dapat membantu model <em>menyesuaikan</em> responsnya agar sesuai dengan tujuan atau ekspektasi pengguna yang diinginkan.</p>
+<p>Contohnya: Diberikan katalog mata kuliah dengan metadata lengkap (nama, deskripsi, tingkat, tag metadata, instruktur, dll.) pada semua mata kuliah yang tersedia dalam kurikulum:</p>
+<ul>
+<li>kita dapat menentukan instruksi untuk "meringkas katalog mata kuliah untuk Musim Gugur 2023"</li>
+<li>kita dapat menggunakan konten utama untuk memberi beberapa contoh keluaran yang diinginkan</li>
+<li>kita dapat menggunakan konten sekunder untuk mengidentifikasi 5 "tag" utama yang diminati.</li>
+</ul>
+<p>Sekarang, model dapat memberikan ringkasan dalam format yang ditunjukkan oleh beberapa contoh tersebut - tetapi jika hasil memiliki beberapa tag, model dapat memprioritaskan 5 tag yang diidentifikasi dalam konten sekunder.</p>
+<hr />
+<!--
+TEMPLATE PELAJARAN:
+Unit ini harus mencakup konsep inti #1.
+Perkuat konsep dengan contoh dan referensi.
+
+KONSEP #3:
+Teknik Rekayasa Prompt.
+Apa saja teknik dasar untuk rekayasa prompt?
+Ilustrasikan dengan beberapa latihan.
+-->
+
+<h2 id="praktik-terbaik-dalam-prompting">Praktik Terbaik dalam Prompting</h2>
+<p>Sekarang kita tahu bagaimana prompt dapat <em>dibangun</em>, kita dapat mulai memikirkan bagaimana <em>merancang</em> mereka untuk mencerminkan praktik terbaik. Kita dapat memikirkannya dalam dua bagian - memiliki <em>pola pikir</em> yang tepat dan menerapkan <em>teknik</em> yang tepat.</p>
+<h3 id="pola-pikir-rekayasa-prompt">Pola Pikir Rekayasa Prompt</h3>
+<p>Rekayasa prompt adalah proses coba-coba jadi ingat tiga faktor panduan luas ini:</p>
+<ol>
+<li>
+<p><strong>Pemahaman Domain Penting.</strong> Akurasi dan relevansi respons bergantung pada <em>domain</em> di mana aplikasi atau pengguna beroperasi. Terapkan intuisi dan keahlian domain Anda untuk <strong>menyesuaikan teknik</strong> lebih lanjut. Misalnya, definisikan <em>kepribadian khusus domain</em> dalam prompt sistem Anda, atau gunakan <em>template khusus domain</em> dalam prompt pengguna Anda. Berikan konten sekunder yang mencerminkan konteks khusus domain, atau gunakan <em>petunjuk dan contoh khusus domain</em> untuk mengarahkan model ke pola penggunaan yang familiar.</p>
+</li>
+<li>
+<p><strong>Pemahaman Model Penting.</strong> Kita tahu model bersifat stokastik secara alami. Tetapi implementasi model juga dapat bervariasi dalam hal dataset pelatihan yang mereka gunakan (pengetahuan pra-pelatihan), kemampuan yang mereka sediakan (misal, lewat API atau SDK) dan jenis konten yang mereka optimalkan (misalnya, kode vs. gambar vs. teks). Pahami kekuatan dan keterbatasan model yang Anda gunakan, dan gunakan pengetahuan itu untuk <em>memprioritaskan tugas</em> atau membangun <em>template khusus</em> yang dioptimalkan untuk kemampuan model.</p>
+</li>
+<li>
+<p><strong>Iterasi &amp; Validasi Penting.</strong> Model terus berkembang pesat, begitu juga teknik rekayasa prompt. Sebagai ahli domain, Anda mungkin memiliki konteks atau kriteria lain untuk aplikasi <em>Anda</em> secara khusus, yang mungkin tidak berlaku untuk komunitas luas. Gunakan alat &amp; teknik rekayasa prompt untuk "memulai" konstruksi prompt, lalu iterasikan dan validasi hasil menggunakan intuisi dan keahlian domain Anda sendiri. Catat wawasan dan buatlah <strong>basis pengetahuan</strong> (misal, perpustakaan prompt) yang dapat digunakan sebagai baseline baru oleh orang lain, untuk iterasi lebih cepat di masa depan.</p>
+</li>
+</ol>
+<h2 id="praktik-terbaik">Praktik Terbaik</h2>
+<p>Sekarang mari kita lihat praktik terbaik yang umum direkomendasikan oleh para praktisi <a href="https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api?WT.mc_id=academic-105485-koreyst">OpenAI</a> dan <a href="https://learn.microsoft.com/azure/ai-services/openai/concepts/prompt-engineering#best-practices?WT.mc_id=academic-105485-koreyst">Azure OpenAI</a>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Apa</th>
+<th style="text-align: left;">Mengapa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Evaluasi model terbaru.</td>
+<td style="text-align: left;">Generasi model baru kemungkinan memiliki fitur dan kualitas yang lebih baik - tetapi juga dapat menyebabkan biaya lebih tinggi. Evaluasi dampaknya, lalu buat keputusan migrasi.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pisahkan instruksi &amp; konteks</td>
+<td style="text-align: left;">Periksa apakah model/penyedia Anda mendefinisikan <em>delimiter</em> untuk membedakan instruksi, konten utama dan konten sekunder dengan lebih jelas. Ini dapat membantu model memberi bobot lebih akurat pada token.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Jadilah spesifik dan jelas</td>
+<td style="text-align: left;">Berikan lebih banyak detail tentang konteks yang diinginkan, hasil, panjang, format, gaya dll. Ini akan meningkatkan kualitas dan konsistensi respons. Tangkap resep dalam template yang dapat digunakan ulang.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Jadilah deskriptif, gunakan contoh</td>
+<td style="text-align: left;">Model mungkin merespons lebih baik dengan pendekatan "tunjukkan dan ceritakan". Mulailah dengan pendekatan <code>zero-shot</code> di mana Anda memberikan instruksi (tapi tanpa contoh) lalu coba <code>few-shot</code> sebagai penyempurnaan, memberikan beberapa contoh output. Gunakan analogi.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gunakan petunjuk untuk memulai penyelesaian</td>
+<td style="text-align: left;">Dorong ke hasil yang diinginkan dengan memberinya kata atau frasa pembuka yang dapat digunakan sebagai titik awal untuk respons.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gandakan</td>
+<td style="text-align: left;">Kadang-kadang Anda perlu mengulangi instruksi ke model. Berikan instruksi sebelum dan sesudah konten utama Anda, gunakan instruksi dan petunjuk, dll. Iterasi &amp; validasi untuk melihat apa yang berhasil.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Urutan Penting</td>
+<td style="text-align: left;">Urutan Anda menyajikan informasi ke model dapat memengaruhi keluaran, bahkan dalam contoh pembelajaran, berkat bias terkini. Coba berbagai opsi untuk melihat mana yang terbaik.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Berikan model sebuah “keluar”</td>
+<td style="text-align: left;">Berikan model respons <em>fallback</em> yang dapat diberikan jika model tidak dapat menyelesaikan tugas karena alasan apapun. Ini bisa mengurangi kemungkinan model menghasilkan respons palsu atau dibuat-buat.</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<p>Seperti praktik terbaik apapun, ingat bahwa <em>hasil Anda mungkin berbeda</em> berdasarkan model, tugas dan domain. Gunakan ini sebagai titik awal, dan iterasikan untuk menemukan apa yang terbaik untuk Anda. Evaluasi ulang terus proses rekayasa prompt Anda saat model dan alat baru tersedia, dengan fokus pada skalabilitas proses dan kualitas respons.</p>
+<!--
+TEMPLATE PELAJARAN:
+Unit ini harus menyediakan tantangan kode jika berlaku
+
+TANTANGAN:
+Tautkan ke Jupyter Notebook dengan hanya komentar kode di instruksi (bagian kode kosong).
+
+SOLUSI:
+Tautkan ke salinan Notebook itu dengan prompt yang telah diisi dan dijalankan, menunjukkan contoh keluaran.
+-->
+
+<h2 id="tugas">Tugas</h2>
+<p>Selamat! Anda telah sampai di akhir pelajaran! Saatnya menguji beberapa konsep dan teknik tersebut dengan contoh nyata!</p>
+<p>Untuk tugas kita, kita akan menggunakan Jupyter Notebook dengan latihan yang dapat Anda selesaikan secara interaktif. Anda juga bisa memperluas Notebook dengan sel Markdown dan Kode Anda sendiri untuk mengeksplorasi ide dan teknik secara mandiri.</p>
+<h3 id="untuk-memulai-buat-fork-repo-lalu">Untuk memulai, buat fork repo, lalu</h3>
+<ul>
+<li>(Disarankan) Mulai GitHub Codespaces</li>
+<li>(Alternatif) Clone repo ke perangkat lokal Anda dan gunakan dengan Docker Desktop</li>
+<li>(Alternatif) Buka Notebook dengan lingkungan runtime Notebook pilihan Anda.</li>
+</ul>
+<h3 id="selanjutnya-konfigurasikan-variabel-lingkungan-anda">Selanjutnya, konfigurasikan variabel lingkungan Anda</h3>
+<ul>
+<li>Salin file <code>.env.copy</code> di root repo ke <code>.env</code> dan isi nilai <code>AZURE_OPENAI_API_KEY</code>, <code>AZURE_OPENAI_ENDPOINT</code> dan <code>AZURE_OPENAI_DEPLOYMENT</code>. Kembali ke bagian <a href="#sandbox-pembelajaran">Learning Sandbox</a> untuk mempelajari caranya.</li>
+</ul>
+<h3 id="selanjutnya-buka-jupyter-notebook">Selanjutnya, buka Jupyter Notebook</h3>
+<ul>
+<li>Pilih kernel runtime. Jika menggunakan opsi 1 atau 2, cukup pilih kernel Python 3.10.x default yang disediakan oleh dev container.</li>
+</ul>
+<p>Anda sudah siap menjalankan latihan. Perhatikan bahwa tidak ada jawaban yang <em>benar dan salah</em> di sini - hanya mencoba-coba dan membangun intuisi untuk apa yang bekerja untuk model dan domain aplikasi tertentu.</p>
+<p><em>Untuk alasan ini tidak ada segmen Solusi Kode dalam pelajaran ini. Sebagai gantinya, Notebook akan memiliki sel Markdown berjudul "Solusi Saya:" yang menunjukkan satu contoh keluaran sebagai referensi.</em></p>
+<!--
+TEMPLATE PELAJARAN:
+Bungkus bagian dengan ringkasan dan sumber untuk pembelajaran mandiri.
+-->
+
+<h2 id="pemeriksaan-pengetahuan">Pemeriksaan Pengetahuan</h2>
+<p>Manakah dari berikut ini yang merupakan prompt bagus sesuai beberapa praktik terbaik yang wajar?</p>
+<ol>
+<li>Tunjukkan gambar mobil merah</li>
+<li>Tunjukkan gambar mobil merah merek Volvo dan model XC90 yang diparkir di tepi tebing dengan matahari terbenam</li>
+<li>Tunjukkan gambar mobil merah merek Volvo dan model XC90</li>
+</ol>
+<p>A: 2, itu prompt terbaik karena menyediakan detail tentang "apa" dan masuk ke spesifik (bukan hanya mobil biasa tapi merek dan model tertentu) dan juga mendeskripsikan keseluruhan latar. 3 adalah yang terbaik berikutnya karena juga mengandung banyak deskripsi.</p>
+<h2 id="tantangan">🚀 Tantangan</h2>
+<p>Lihat apakah Anda dapat memanfaatkan teknik "petunjuk" dengan prompt: Lengkapi kalimat "Tunjukkan gambar mobil merah merek Volvo dan ". Apa yang dijawab, dan bagaimana Anda akan meningkatkannya?</p>
+<h2 id="kerja-bagus-lanjutkan-pembelajaran-anda">Kerja Bagus! Lanjutkan Pembelajaran Anda</h2>
+<p>Ingin belajar lebih lanjut tentang konsep Rekayasa Prompt yang berbeda? Pergi ke <a href="https://aka.ms/genai-collection?WT.mc_id=academic-105485-koreyst">halaman pembelajaran lanjutan</a> untuk menemukan sumber hebat lainnya tentang topik ini.</p>
+<p>Lanjut ke Pelajaran 5 di mana kita akan melihat <a href="../05-advanced-prompts/README.html?WT.mc_id=academic-105485-koreyst">teknik prompting lanjutan</a>!</p>
+<hr />
+<!-- CO-OP TRANSLATOR DISCLAIMER START -->
+<p><strong>Penafian</strong>:<br />
+Dokumen ini telah diterjemahkan menggunakan layanan terjemahan AI <a href="https://github.com/Azure/co-op-translator">Co-op Translator</a>. Meskipun kami berupaya untuk mencapai akurasi, harap diketahui bahwa terjemahan otomatis mungkin mengandung kesalahan atau ketidakakuratan. Dokumen asli dalam bahasa aslinya harus dianggap sebagai sumber yang sah. Untuk informasi penting, disarankan menggunakan terjemahan profesional oleh manusia. Kami tidak bertanggung jawab atas kesalahpahaman atau penafsiran yang keliru yang timbul dari penggunaan terjemahan ini.</p>
+<!-- CO-OP TRANSLATOR DISCLAIMER END -->
+</body>
+</html>

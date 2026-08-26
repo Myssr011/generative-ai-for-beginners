@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Praktikum 05 — Teknik Prompt Lanjutan (Advanced Prompts)</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.6; max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem;
+    color: #1f2328; background: #ffffff;
+  }
+  h1, h2, h3, h4 { line-height: 1.25; margin-top: 1.8em; }
+  h1 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  h2 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  a { color: #0969da; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; height: auto; }
+  pre {
+    background: #f6f8fa; padding: 1em; overflow-x: auto;
+    border-radius: 6px; font-size: 85%;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    background: #f6f8fa; padding: .2em .4em; border-radius: 4px; font-size: 85%;
+  }
+  pre code { background: none; padding: 0; }
+  table { border-collapse: collapse; display: block; overflow-x: auto; }
+  th, td { border: 1px solid #d1d9e0; padding: 6px 13px; }
+  th { background: #f6f8fa; }
+  blockquote {
+    border-left: 4px solid #d1d9e0; margin: 0; padding: 0 1em; color: #59636e;
+  }
+  hr { border: none; border-top: 1px solid #d1d9e0; margin: 2em 0; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e6edf3; background: #0d1117; }
+    h1, h2 { border-color: #30363d; }
+    a { color: #4493f8; }
+    pre, code, th { background: #161b22; }
+    th, td { border-color: #30363d; }
+    blockquote { border-color: #30363d; color: #9198a1; }
+    hr { border-color: #30363d; }
+  }
+</style>
+</head>
+<body>
+<h1 id="praktikum-05-teknik-prompt-lanjutan-advanced-prompts">Praktikum 05 — Teknik Prompt Lanjutan (Advanced Prompts)</h1>
+<p>Versi hands-on dari materi <a href="../README.html">README.md</a>. Dikerjakan di <strong>GitHub Codespaces</strong> dengan server Ollama kampus (<code>https://ollama.if.unismuh.ac.id</code>) — tanpa API key.</p>
+<h2 id="tujuan-pembelajaran">Tujuan Pembelajaran</h2>
+<ol>
+<li>Menerapkan <strong>chain-of-thought (CoT)</strong>: menyuruh model berpikir langkah demi langkah agar jawaban soal bernalar lebih akurat.</li>
+<li>Memahami efek <strong>temperature</strong> (pengatur "kreativitas"/keacakan output: rendah = konsisten, tinggi = variatif).</li>
+<li>Menerapkan <strong>self-consistency</strong>: menanyakan soal yang sama berulang kali lalu mengambil jawaban mayoritas.</li>
+<li>Menerapkan <strong>self-refine</strong>: meminta model mengkritik dan memperbaiki jawabannya sendiri.</li>
+</ol>
+<h2 id="prasyarat">Prasyarat</h2>
+<ul>
+<li>Sudah menyelesaikan <a href="../../04-prompt-engineering-fundamentals/praktikum/PRAKTIKUM.html">Praktikum 04</a> (konsep prompt, token, <code>/api/generate</code>).</li>
+<li>Paham dasar Python.</li>
+</ul>
+<h2 id="urutan-kerja">Urutan Kerja</h2>
+<p>Semua perintah dijalankan dari folder ini: <code>cd 05-advanced-prompts/praktikum</code></p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Langkah</th>
+<th>Perintah</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td><strong>Buat environment</strong></td>
+<td><code>python3 -m venv .venv</code></td>
+</tr>
+<tr>
+<td>02</td>
+<td><strong>Aktifkan</strong></td>
+<td><code>source .venv/bin/activate</code></td>
+</tr>
+<tr>
+<td>03</td>
+<td><strong>Pasang library</strong></td>
+<td><code>pip install -r requirements.txt</code></td>
+</tr>
+<tr>
+<td>04</td>
+<td><strong>Cek kesiapan</strong></td>
+<td><code>python src/cek_env.py</code> → catat model, <code>export OLLAMA_MODEL="..."</code></td>
+</tr>
+<tr>
+<td>05</td>
+<td><strong>Isi TODO</strong></td>
+<td>Kerjakan 4 fungsi di <code>src/main.py</code></td>
+</tr>
+<tr>
+<td>06</td>
+<td><strong>Jalankan</strong></td>
+<td><code>python src/main.py</code></td>
+</tr>
+<tr>
+<td>07</td>
+<td><strong>Uji jawaban</strong></td>
+<td><code>pytest -q</code> (target: <code>5 passed</code>)</td>
+</tr>
+<tr>
+<td>08</td>
+<td><strong>Eksplorasi</strong></td>
+<td>Tantangan di bagian bawah</td>
+</tr>
+</tbody>
+</table>
+<h2 id="isi-todo-langkah-05">Isi TODO (Langkah 05)</h2>
+<table>
+<thead>
+<tr>
+<th>TODO</th>
+<th>Fungsi</th>
+<th>Kenapa?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>generate(prompt, temperature)</code></td>
+<td>Seperti praktikum 04, tapi kini bisa mengatur <code>options.temperature</code> — kunci demo keacakan</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>prompt_cot(soal)</code></td>
+<td>CoT hanyalah <em>teknik menyusun prompt</em> — instruksi "berpikir langkah demi langkah" memicu penalaran</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>self_consistency(soal, n)</code></td>
+<td>Karena jawaban model stokastik, bertanya n× lalu voting mengurangi jawaban ngawur</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>prompt_refine(jawaban, instruksi)</code></td>
+<td>Model bisa jadi "reviewer" untuk outputnya sendiri — dua panggilan lebih baik dari satu</td>
+</tr>
+</tbody>
+</table>
+<h2 id="yang-diamati-di-langkah-06">Yang Diamati di Langkah 06</h2>
+<ul>
+<li><strong>Demo 1:</strong> bandingkan jawaban langsung vs jawaban ber-CoT untuk soal cerita komputer lab (jawaban benar: <strong>12</strong>). Mana yang benar?</li>
+<li><strong>Demo 2:</strong> temperature 0.0 dijalankan 2× (jawaban mirip/identik) vs 1.0 dijalankan 2× (jawaban berbeda-beda).</li>
+<li><strong>Demo 3:</strong> 3 jawaban self-consistency — apakah mayoritas menjawab 12?</li>
+<li><strong>Demo 4:</strong> paragraf versi 1 vs versi hasil self-refine — apa yang membaik?</li>
+</ul>
+<p>✅ <strong>Validasi:</strong> kelima demo tampil tanpa <code>[LEWAT]</code>, lalu <code>pytest -q</code> → <code>5 passed</code>.</p>
+<h3 id="checkpoint-1">🧠 Checkpoint 1</h3>
+<ol>
+<li>Pada Demo 1, mengapa instruksi "berpikir langkah demi langkah" bisa mengubah akurasi jawaban, padahal modelnya sama?</li>
+<li>Kapan kamu justru <em>tidak</em> ingin temperature tinggi? Beri 1 contoh aplikasi nyata.</li>
+</ol>
+<h3 id="checkpoint-2">🧠 Checkpoint 2</h3>
+<p>Self-consistency memanggil model n kali → n kali lebih lambat dan mahal. Dalam kondisi apa trade-off ini layak? Dalam kondisi apa tidak?</p>
+<h2 id="langkah-08-eksplorasi">Langkah 08 — Eksplorasi</h2>
+<ol>
+<li>Ubah <code>SOAL</code> di <code>main.py</code> menjadi soal cerita buatanmu yang lebih menjebak. Apakah CoT masih menang?</li>
+<li>Coba <code>self_consistency</code> dengan <code>n=5</code> dan <code>temperature=0.5</code> — apakah hasil voting lebih stabil?</li>
+<li>(Bonus) Terapkan <strong>least-to-most</strong>: pecah soal menjadi sub-pertanyaan, tanyakan berurutan, bandingkan dengan CoT biasa.</li>
+</ol>
+<h2 id="yang-dikumpulkan">Yang Dikumpulkan</h2>
+<ol>
+<li><code>src/main.py</code> dengan 4 TODO selesai + screenshot <code>pytest -q</code> hijau.</li>
+<li>Jawaban Checkpoint 1 &amp; 2.</li>
+<li>Catatan hasil eksplorasi no. 1 (soal buatanmu + hasil perbandingannya).</li>
+</ol>
+<blockquote>
+<p>Kunci jawaban tersedia di <code>solusi/main_solusi.py</code> — gunakan hanya jika mentok, dan tulis ulang dengan pemahamanmu sendiri.</p>
+</blockquote>
+</body>
+</html>
