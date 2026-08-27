@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Praktikum 07 — Membangun Aplikasi Chat</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.6; max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem;
+    color: #1f2328; background: #ffffff;
+  }
+  h1, h2, h3, h4 { line-height: 1.25; margin-top: 1.8em; }
+  h1 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  h2 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  a { color: #0969da; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; height: auto; }
+  pre {
+    background: #f6f8fa; padding: 1em; overflow-x: auto;
+    border-radius: 6px; font-size: 85%;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    background: #f6f8fa; padding: .2em .4em; border-radius: 4px; font-size: 85%;
+  }
+  pre code { background: none; padding: 0; }
+  table { border-collapse: collapse; display: block; overflow-x: auto; }
+  th, td { border: 1px solid #d1d9e0; padding: 6px 13px; }
+  th { background: #f6f8fa; }
+  blockquote {
+    border-left: 4px solid #d1d9e0; margin: 0; padding: 0 1em; color: #59636e;
+  }
+  hr { border: none; border-top: 1px solid #d1d9e0; margin: 2em 0; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e6edf3; background: #0d1117; }
+    h1, h2 { border-color: #30363d; }
+    a { color: #4493f8; }
+    pre, code, th { background: #161b22; }
+    th, td { border-color: #30363d; }
+    blockquote { border-color: #30363d; color: #9198a1; }
+    hr { border-color: #30363d; }
+  }
+</style>
+</head>
+<body>
+<h1 id="praktikum-07-membangun-aplikasi-chat">Praktikum 07 — Membangun Aplikasi Chat</h1>
+<p>Versi hands-on dari materi <a href="../README.html">README.md</a>, memakai server Ollama kampus — tanpa API key. Kamu membangun inti chatbot: percakapan multi-giliran yang "mengingat" konteks.</p>
+<h2 id="tujuan-pembelajaran">Tujuan Pembelajaran</h2>
+<ol>
+<li>Memahami bahwa chatbot <strong>tidak punya memori</strong> — "ingatan" berasal dari <em>seluruh riwayat percakapan</em> yang dikirim ulang tiap giliran.</li>
+<li>Mengelola riwayat pesan (role <code>system</code>/<code>user</code>/<code>assistant</code>) sebagai struktur data.</li>
+<li>Menangani keterbatasan <strong>context window</strong> (batas token yang bisa "diingat" model) dengan memangkas riwayat tanpa membuang system message.</li>
+</ol>
+<h2 id="prasyarat">Prasyarat</h2>
+<ul>
+<li>Sudah menyelesaikan <a href="../../04-prompt-engineering-fundamentals/praktikum/PRAKTIKUM.html">Praktikum 04</a> (terutama TODO 3 <code>/api/chat</code>).</li>
+</ul>
+<h2 id="urutan-kerja">Urutan Kerja</h2>
+<p>Semua perintah dari folder ini: <code>cd 07-building-chat-applications/praktikum</code></p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Langkah</th>
+<th>Perintah</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td><strong>Buat environment</strong></td>
+<td><code>python3 -m venv .venv</code></td>
+</tr>
+<tr>
+<td>02</td>
+<td><strong>Aktifkan</strong></td>
+<td><code>source .venv/bin/activate</code></td>
+</tr>
+<tr>
+<td>03</td>
+<td><strong>Pasang library</strong></td>
+<td><code>pip install -r requirements.txt</code></td>
+</tr>
+<tr>
+<td>04</td>
+<td><strong>Cek kesiapan</strong></td>
+<td><code>python src/cek_env.py</code> → <code>export OLLAMA_MODEL="..."</code></td>
+</tr>
+<tr>
+<td>05</td>
+<td><strong>Isi TODO</strong></td>
+<td>Kerjakan 3 fungsi di <code>src/main.py</code></td>
+</tr>
+<tr>
+<td>06</td>
+<td><strong>Jalankan</strong></td>
+<td><code>python src/main.py</code></td>
+</tr>
+<tr>
+<td>07</td>
+<td><strong>Uji jawaban</strong></td>
+<td><code>pytest -q</code> (target: <code>5 passed</code>)</td>
+</tr>
+<tr>
+<td>08</td>
+<td><strong>Eksplorasi</strong></td>
+<td>Tantangan di bagian bawah</td>
+</tr>
+</tbody>
+</table>
+<p>Detail tiap langkah ada di bawah. <strong>Jangan lompat-lompat</strong> — tiap langkah bergantung pada langkah sebelumnya.</p>
+<hr />
+<h2 id="langkah-0102-buat-aktifkan-environment">Langkah 01–02: Buat &amp; Aktifkan Environment</h2>
+<p><strong>Kenapa?</strong> <em>Virtual environment</em> (venv) mengisolasi library praktikum ini agar tidak bercampur dengan proyek lain.</p>
+<pre><code class="language-bash">python3 -m venv .venv
+source .venv/bin/activate
+</code></pre>
+<p>✅ <strong>Hasil:</strong> muncul awalan <code>(.venv)</code> di kiri prompt terminal.</p>
+<h2 id="langkah-03-pasang-library">Langkah 03: Pasang Library</h2>
+<p><strong>Kenapa?</strong> Kita butuh <code>requests</code> (mengirim HTTP request ke server AI) dan <code>pytest</code> (menguji jawabanmu otomatis).</p>
+<pre><code class="language-bash">pip install -r requirements.txt
+</code></pre>
+<p>✅ <strong>Hasil:</strong> baris terakhir kurang lebih <code>Successfully installed requests-... pytest-...</code> tanpa error merah.</p>
+<h2 id="langkah-04-cek-kesiapan">Langkah 04: Cek Kesiapan</h2>
+<p><strong>Kenapa?</strong> Sebelum menulis kode, pastikan environment benar dan server AI kampus bisa dijangkau — supaya kalau nanti ada error, kamu tahu itu bukan masalah koneksi.</p>
+<pre><code class="language-bash">python src/cek_env.py
+</code></pre>
+<p>✅ <strong>Hasil:</strong> semua baris <code>[OK]</code>, daftar model yang tersedia, dan tulisan <code>SIAP!</code>.</p>
+<p>📌 <strong>Penting:</strong> catat salah satu nama model dari daftar itu, lalu daftarkan ke terminal (ganti dengan model pilihanmu):</p>
+<pre><code class="language-bash">export OLLAMA_MODEL=&quot;llama3.2:latest&quot;
+</code></pre>
+<blockquote>
+<p>Kalau ada baris <code>[GAGAL]</code>: biasanya library belum terpasang (ulangi langkah 03) atau koneksi ke server bermasalah (lapor ke aslab).</p>
+</blockquote>
+<h2 id="langkah-05-isi-todo-di-srcmainpy">Langkah 05: Isi TODO di <code>src/main.py</code></h2>
+<p>Ada <strong>3 fungsi</strong> yang harus kamu lengkapi. Tiap fungsi sudah berisi petunjuk langkah demi langkah di dalam docstring-nya. Kerjakan berurutan:</p>
+<h3 id="todo-1-chatmessages">TODO 1 — <code>chat(messages)</code></h3>
+<p><strong>Kenapa?</strong> Endpoint percakapan multi-role — fondasi seluruh aplikasi chat.</p>
+<h3 id="todo-2-tambah_pesanriwayat-role-content">TODO 2 — <code>tambah_pesan(riwayat, role, content)</code></h3>
+<p><strong>Kenapa?</strong> Riwayat = data; harus dikelola <em>immutable</em> (kembalikan list baru) agar tidak ada efek samping.</p>
+<h3 id="todo-3-potong_riwayatriwayat-maks">TODO 3 — <code>potong_riwayat(riwayat, maks)</code></h3>
+<p><strong>Kenapa?</strong> Context window terbatas; aplikasi nyata wajib memangkas riwayat tapi system message harus selamat.</p>
+<p>💡 Kerjakan satu TODO → langsung lompat ke langkah 06 untuk melihat hasilnya → kembali kerjakan TODO berikutnya. Demo yang TODO-nya belum selesai otomatis dilewati.</p>
+<h2 id="langkah-06-jalankan">Langkah 06: Jalankan</h2>
+<pre><code class="language-bash">python src/main.py
+</code></pre>
+<p><strong>Kenapa?</strong> Script ini menjalankan demo yang membuktikan konsep dari materi. Amati:</p>
+<ul>
+<li><strong>Demo 1:</strong> 3 giliran percakapan — di giliran terakhir model tahu "Budi, semester 3" karena riwayat dikirim ulang.</li>
+<li><strong>Demo 2:</strong> pertanyaan sama tanpa riwayat → model "amnesia", tidak tahu nama pengguna.</li>
+<li><strong>Demo 3:</strong> 8 pesan dipangkas jadi 4: system + 3 pesan terakhir.</li>
+</ul>
+<p>✅ <strong>Hasil:</strong> ketiga demo tampil tanpa <code>[LEWAT]</code>. Kalau masih ada <code>[LEWAT] TODO x belum dikerjakan</code>, kembali ke langkah 05.</p>
+<h3 id="checkpoint-1">🧠 Checkpoint 1</h3>
+<p>Dari Demo 1 vs Demo 2: jelaskan dengan kata-katamu sendiri dari mana "ingatan" chatbot berasal. Apa konsekuensinya terhadap biaya (token) saat percakapan makin panjang?</p>
+<h2 id="langkah-07-uji-jawaban">Langkah 07: Uji Jawaban</h2>
+<pre><code class="language-bash">pytest -q
+</code></pre>
+<p><strong>Kenapa?</strong> Tes otomatis memeriksa apakah fungsimu benar — bukan cuma "jalan tanpa error", tapi hasilnya sesuai spesifikasi.</p>
+<p>✅ <strong>Hasil:</strong> semua tes hijau — <code>5 passed</code>.</p>
+<blockquote>
+<p>Kalau ada <code>FAILED</code>, baca nama tesnya untuk tahu TODO mana yang belum sesuai. Kalau ada <code>skipped</code>, artinya server tidak terjangkau saat tes jalan.</p>
+</blockquote>
+<h2 id="langkah-08-eksplorasi">Langkah 08: Eksplorasi</h2>
+<ol>
+<li>Buat loop chat interaktif dengan <code>input()</code> (ketik <code>keluar</code> untuk berhenti) memakai ketiga fungsimu.</li>
+<li>Ganti <code>SYSTEM</code> menjadi persona lain (misal: dosen killer vs kakak tingkat santai) — bandingkan gaya jawabannya.</li>
+<li>(Bonus) Panggil <code>potong_riwayat(riwayat, maks=6)</code> setiap giliran di loop chatmu, lalu buktikan kapan chatbot mulai "lupa" nama pengguna.</li>
+</ol>
+<h3 id="checkpoint-2">🧠 Checkpoint 2</h3>
+<p><code>potong_riwayat</code> membuang pesan lama. Informasi apa yang bisa hilang, dan bagaimana aplikasi seperti ChatGPT mengatasinya? (petunjuk: ringkasan percakapan, RAG — praktikum 15)</p>
+<hr />
+<h2 id="rangkuman">Rangkuman</h2>
+<ul>
+<li>Chatbot <strong>tidak punya memori</strong> — "ingatan" berasal dari seluruh riwayat percakapan yang dikirim ulang tiap giliran.</li>
+<li>Riwayat = list pesan ber-role <code>system</code>/<code>user</code>/<code>assistant</code> yang dikelola sebagai struktur data.</li>
+<li>Percakapan makin panjang = token makin banyak = biaya naik dan mendekati batas <strong>context window</strong>.</li>
+<li>Memangkas riwayat wajib menyelamatkan <strong>system message</strong>; informasi lama yang terbuang bisa diatasi dengan ringkasan percakapan atau RAG.</li>
+</ul>
+<h2 id="yang-dikumpulkan">Yang Dikumpulkan</h2>
+<ol>
+<li><code>src/main.py</code> dengan 3 TODO selesai + screenshot <code>pytest -q</code> hijau.</li>
+<li>Jawaban Checkpoint 1 &amp; 2.</li>
+<li>Kode loop chat interaktif dari Eksplorasi no. 1.</li>
+</ol>
+<blockquote>
+<p>Kunci jawaban di <code>solusi/main_solusi.py</code> — gunakan hanya jika mentok.</p>
+</blockquote>
+</body>
+</html>

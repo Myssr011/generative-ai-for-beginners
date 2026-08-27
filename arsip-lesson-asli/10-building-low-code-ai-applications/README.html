@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Membangun Aplikasi AI Low Code</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.6; max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem;
+    color: #1f2328; background: #ffffff;
+  }
+  h1, h2, h3, h4 { line-height: 1.25; margin-top: 1.8em; }
+  h1 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  h2 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  a { color: #0969da; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; height: auto; }
+  pre {
+    background: #f6f8fa; padding: 1em; overflow-x: auto;
+    border-radius: 6px; font-size: 85%;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    background: #f6f8fa; padding: .2em .4em; border-radius: 4px; font-size: 85%;
+  }
+  pre code { background: none; padding: 0; }
+  table { border-collapse: collapse; display: block; overflow-x: auto; }
+  th, td { border: 1px solid #d1d9e0; padding: 6px 13px; }
+  th { background: #f6f8fa; }
+  blockquote {
+    border-left: 4px solid #d1d9e0; margin: 0; padding: 0 1em; color: #59636e;
+  }
+  hr { border: none; border-top: 1px solid #d1d9e0; margin: 2em 0; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e6edf3; background: #0d1117; }
+    h1, h2 { border-color: #30363d; }
+    a { color: #4493f8; }
+    pre, code, th { background: #161b22; }
+    th, td { border-color: #30363d; }
+    blockquote { border-color: #30363d; color: #9198a1; }
+    hr { border-color: #30363d; }
+  }
+</style>
+</head>
+<body>
+<h1 id="membangun-aplikasi-ai-low-code">Membangun Aplikasi AI Low Code</h1>
+<h2 id="pendahuluan">Pendahuluan</h2>
+<p>Sekarang setelah kita belajar cara membangun aplikasi penghasil gambar, mari kita bahas tentang low code. AI generatif dapat digunakan untuk berbagai bidang termasuk low code, tetapi apa itu low code dan bagaimana kita dapat menambahkan AI ke dalamnya?</p>
+<p>Membangun aplikasi dan solusi menjadi lebih mudah bagi pengembang tradisional maupun non-pengembang melalui penggunaan Platform Pengembangan Low Code. Platform Pengembangan Low Code memungkinkan Anda membangun aplikasi dan solusi dengan sedikit atau tanpa kode. Ini dicapai dengan menyediakan lingkungan pengembangan visual yang memungkinkan Anda menyeret dan melepas komponen untuk membangun aplikasi dan solusi. Ini memungkinkan Anda membangun aplikasi dan solusi lebih cepat dan dengan sumber daya yang lebih sedikit. Dalam pelajaran ini, kita menyelami bagaimana menggunakan Low Code dan bagaimana meningkatkan pengembangan low code dengan AI menggunakan Power Platform.</p>
+<p>Power Platform memberikan kesempatan kepada organisasi untuk memberdayakan tim mereka dalam membangun solusi mereka sendiri melalui lingkungan low-code atau no-code yang intuitif. Lingkungan ini membantu menyederhanakan proses pembuatan solusi. Dengan Power Platform, solusi dapat dibangun dalam hitungan hari atau minggu bukan bulan atau tahun. Power Platform terdiri dari lima produk utama: Power Apps, Power Automate, Power BI, Power Pages, dan Copilot Studio.</p>
+<p>Pelajaran ini mencakup:</p>
+<ul>
+<li>Pengenalan AI Generatif di Power Platform</li>
+<li>Pengenalan Copilot dan cara menggunakannya</li>
+<li>Menggunakan AI Generatif untuk membangun aplikasi dan alur kerja di Power Platform</li>
+<li>Memahami Model AI di Power Platform dengan AI Builder</li>
+<li>Membangun agen cerdas dengan Microsoft Copilot Studio</li>
+</ul>
+<h2 id="tujuan-pembelajaran">Tujuan Pembelajaran</h2>
+<p>Pada akhir pelajaran ini, Anda akan dapat:</p>
+<ul>
+<li>
+<p>Memahami cara kerja Copilot di Power Platform.</p>
+</li>
+<li>
+<p>Membangun Aplikasi Pelacak Tugas Siswa untuk startup pendidikan kami.</p>
+</li>
+<li>
+<p>Membangun Alur Pemrosesan Faktur yang menggunakan AI untuk mengekstrak informasi dari faktur.</p>
+</li>
+<li>
+<p>Menerapkan praktik terbaik saat menggunakan Model AI Create Text dengan GPT.</p>
+</li>
+<li>
+<p>Memahami apa itu Microsoft Copilot Studio dan bagaimana membangun agen cerdas dengannya.</p>
+</li>
+</ul>
+<p>Alat dan teknologi yang akan Anda gunakan dalam pelajaran ini adalah:</p>
+<ul>
+<li>
+<p><strong>Power Apps</strong>, untuk aplikasi Pelacak Tugas Siswa, yang menyediakan lingkungan pengembangan low-code untuk membangun aplikasi untuk melacak, mengelola, dan berinteraksi dengan data.</p>
+</li>
+<li>
+<p><strong>Dataverse</strong>, untuk menyimpan data aplikasi Pelacak Tugas Siswa di mana Dataverse akan menyediakan platform data low-code untuk menyimpan data aplikasi tersebut.</p>
+</li>
+<li>
+<p><strong>Power Automate</strong>, untuk alur kerja Pemrosesan Faktur di mana Anda akan memiliki lingkungan pengembangan low-code untuk membangun alur kerja guna mengotomatiskan proses Pemrosesan Faktur.</p>
+</li>
+<li>
+<p><strong>AI Builder</strong>, untuk Model AI Pemrosesan Faktur di mana Anda akan menggunakan Model AI yang sudah dibuat sebelumnya untuk memproses faktur untuk startup kami.</p>
+</li>
+</ul>
+<h2 id="ai-generatif-di-power-platform">AI Generatif di Power Platform</h2>
+<p>Meningkatkan pengembangan dan aplikasi low-code dengan AI generatif adalah fokus utama Power Platform. Tujuannya adalah memungkinkan setiap orang membangun aplikasi, situs, dasbor yang didukung AI, dan mengotomatisasi proses dengan AI, <em>tanpa memerlukan keahlian ilmu data</em>. Tujuan ini dicapai dengan mengintegrasikan AI generatif ke dalam pengalaman pengembangan low-code di Power Platform dalam bentuk Copilot dan AI Builder.</p>
+<h3 id="bagaimana-cara-kerjanya">Bagaimana cara kerjanya?</h3>
+<p>Copilot adalah asisten AI yang memungkinkan Anda membangun solusi Power Platform dengan mendeskripsikan kebutuhan Anda dalam serangkaian langkah percakapan menggunakan bahasa alami. Anda bisa misalnya memerintahkan asisten AI Anda untuk menyatakan bidang apa yang akan digunakan aplikasi Anda dan Copilot akan membuat aplikasi serta model data dasarnya atau Anda bisa menentukan bagaimana mengatur alur di Power Automate.</p>
+<p>Anda dapat menggunakan fungsi yang digerakkan oleh Copilot sebagai fitur pada layar aplikasi Anda untuk memungkinkan pengguna menemukan wawasan melalui interaksi percakapan.</p>
+<p>AI Builder adalah kemampuan AI low-code yang tersedia di Power Platform yang memungkinkan Anda menggunakan Model AI untuk membantu mengotomatisasi proses dan memprediksi hasil. Dengan AI Builder Anda dapat membawa AI ke aplikasi dan alur kerja yang terhubung ke data Anda di Dataverse atau di berbagai sumber data cloud, seperti SharePoint, OneDrive, atau Azure.</p>
+<p>Copilot tersedia di semua produk Power Platform: Power Apps, Power Automate, Power BI, Power Pages, dan Copilot Studio (sebelumnya Power Virtual Agents). AI Builder tersedia di Power Apps dan Power Automate. Dalam pelajaran ini, kita akan fokus pada cara menggunakan Copilot dan AI Builder di Power Apps dan Power Automate untuk membangun solusi bagi startup pendidikan kami.</p>
+<h3 id="copilot-di-power-apps">Copilot di Power Apps</h3>
+<p>Sebagai bagian dari Power Platform, Power Apps menyediakan lingkungan pengembangan low-code untuk membangun aplikasi guna melacak, mengelola, dan berinteraksi dengan data. Ini adalah rangkaian layanan pengembangan aplikasi dengan platform data yang dapat diskalakan dan kemampuan untuk terhubung ke layanan cloud dan data on-premises. Power Apps memungkinkan Anda membangun aplikasi yang berjalan di browser, tablet, dan ponsel, serta dapat dibagikan dengan rekan kerja. Power Apps memudahkan pengguna dalam pengembangan aplikasi dengan antarmuka yang sederhana, sehingga setiap pengguna bisnis atau pengembang profesional dapat membangun aplikasi kustom. Pengalaman pengembangan aplikasi juga diperkaya dengan AI Generatif melalui Copilot.</p>
+<p>Fitur asisten AI copilot di Power Apps memungkinkan Anda mendeskripsikan jenis aplikasi yang Anda butuhkan dan informasi apa yang ingin aplikasi Anda lacak, kumpulkan, atau tampilkan. Copilot kemudian menghasilkan aplikasi Canvas responsif berdasarkan deskripsi Anda. Anda kemudian dapat menyesuaikan aplikasi untuk memenuhi kebutuhan Anda. AI Copilot juga menghasilkan dan menyarankan Tabel Dataverse dengan bidang yang Anda butuhkan untuk menyimpan data yang ingin Anda lacak beserta beberapa data contoh. Kita akan melihat apa itu Dataverse dan bagaimana Anda bisa menggunakannya di Power Apps dalam pelajaran ini nanti. Anda kemudian dapat menyesuaikan tabel untuk memenuhi kebutuhan Anda menggunakan fitur asisten AI Copilot melalui langkah-langkah percakapan. Fitur ini tersedia langsung dari layar beranda Power Apps.</p>
+<h3 id="copilot-di-power-automate">Copilot di Power Automate</h3>
+<p>Sebagai bagian dari Power Platform, Power Automate memungkinkan pengguna membuat alur kerja otomatis di antara aplikasi dan layanan. Ini membantu mengotomatisasi proses bisnis yang berulang seperti komunikasi, pengumpulan data, dan persetujuan keputusan. Antarmuka yang sederhana memungkinkan pengguna dengan berbagai kompetensi teknis (dari pemula hingga pengembang berpengalaman) untuk mengotomatisasi tugas kerja. Pengalaman pengembangan alur kerja juga diperkuat dengan AI Generatif melalui Copilot.</p>
+<p>Fitur asisten AI copilot di Power Automate memungkinkan Anda mendeskripsikan jenis alur yang Anda butuhkan dan tindakan apa yang Anda ingin alur lakukan. Copilot kemudian menghasilkan alur berdasarkan deskripsi Anda. Anda kemudian dapat menyesuaikan alur untuk memenuhi kebutuhan Anda. AI Copilot juga menghasilkan dan menyarankan tindakan yang Anda perlukan untuk melakukan tugas yang ingin Anda otomatisasi. Kita akan melihat apa itu alur dan bagaimana Anda bisa menggunakannya di Power Automate dalam pelajaran ini nanti. Anda kemudian dapat menyesuaikan tindakan untuk memenuhi kebutuhan Anda menggunakan fitur asisten AI Copilot melalui langkah-langkah percakapan. Fitur ini tersedia langsung dari layar beranda Power Automate.</p>
+<h2 id="membangun-agen-cerdas-dengan-microsoft-copilot-studio">Membangun Agen Cerdas dengan Microsoft Copilot Studio</h2>
+<p><a href="https://learn.microsoft.com/microsoft-copilot-studio/fundamentals-what-is-copilot-studio?WT.mc_id=academic-105485-koreyst">Microsoft Copilot Studio</a> (sebelumnya Power Virtual Agents) adalah anggota low-code dari Power Platform untuk membangun <strong>agen AI</strong> — copilot percakapan yang dapat menjawab pertanyaan, mengambil tindakan, dan mengotomatisasi tugas atas nama pengguna Anda. Sama seperti Power Platform lainnya, Anda membangun agen ini dalam pengalaman visual yang berorientasi bahasa alami: Anda mendeskripsikan apa yang Anda ingin agen lakukan, dan Copilot Studio membantu mengatur instruksi, pengetahuan, dan tindakan agen tersebut.</p>
+<p>Untuk startup pendidikan kami, Anda dapat membangun agen yang menjawab pertanyaan siswa tentang kursus, memeriksa tenggat tugas, dan bahkan mengirim email kepada instruktur — semuanya tanpa menulis kode.</p>
+<p>Berikut beberapa kemampuan terbaru yang membuat Copilot Studio kuat:</p>
+<ul>
+<li>
+<p><strong>Jawaban generatif dari pengetahuan Anda</strong>. Alih-alih menulis setiap percakapan secara manual, Anda dapat menghubungkan <strong>sumber pengetahuan</strong> — situs web publik, SharePoint, OneDrive, Dataverse, file yang diunggah, atau data perusahaan melalui konektor — dan agen menghasilkan jawaban yang berbasis dari sumber tersebut.</p>
+</li>
+<li>
+<p><strong>Orkestrasi generatif</strong>. Alih-alih mengandalkan frasa pemicu yang kaku, agen menggunakan AI untuk memahami permintaan dan secara dinamis menentukan pengetahuan, topik, dan tindakan yang digabungkan untuk memenuhinya, termasuk menggabungkan beberapa langkah bersama.</p>
+</li>
+<li>
+<p><strong>Tindakan dan konektor</strong>. Agen dapat <em>melakukan</em> hal, bukan hanya mengobrol. Anda dapat memberikan agen tindakan yang didukung oleh lebih dari 1.500 konektor Power Platform yang sudah dibuat sebelumnya, alur Power Automate, REST API khusus, prompt, atau server <strong>Model Context Protocol (MCP)</strong>.</p>
+</li>
+<li>
+<p><strong>Agen otonom</strong>. Agen tidak terbatas hanya merespons di jendela chat. Anda dapat membangun <strong>agen otonom</strong> yang dipicu oleh kejadian — seperti email baru, catatan baru di Dataverse, atau file yang diunggah — lalu bertindak di latar belakang untuk menyelesaikan tugas.</p>
+</li>
+<li>
+<p><strong>Orkestrasi multi-agen</strong>. Agen dapat memanggil agen lain. Agen Copilot Studio dapat menyerahkan tugas ke, atau diperluas oleh, agen lain, termasuk agen yang diterbitkan ke Microsoft 365 Copilot dan agen yang dibangun di Microsoft Foundry.</p>
+</li>
+<li>
+<p><strong>Pilihan model</strong>. Selain model bawaan, Anda dapat membawa model dari katalog model Microsoft Foundry untuk menyesuaikan cara agen Anda berpikir dan merespons.</p>
+</li>
+<li>
+<p><strong>Menerbitkan di mana saja</strong>. Setelah dibangun, agen dapat diterbitkan ke berbagai saluran — Microsoft Teams, Microsoft 365 Copilot, situs web atau aplikasi kustom, dan lainnya — dengan keamanan, autentikasi, dan analitik dikelola melalui pengalaman admin Power Platform.</p>
+</li>
+</ul>
+<p>Anda dapat mulai membangun agen pertama Anda di <a href="https://copilotstudio.microsoft.com?WT.mc_id=academic-105485-koreyst">copilotstudio.microsoft.com</a> dan pelajari lebih lanjut di <a href="https://learn.microsoft.com/microsoft-copilot-studio/?WT.mc_id=academic-105485-koreyst">dokumentasi Microsoft Copilot Studio</a>.</p>
+<h2 id="tugas-kelola-tugas-siswa-dan-faktur-untuk-startup-kami-menggunakan-copilot">Tugas: Kelola tugas siswa dan faktur untuk startup kami menggunakan Copilot</h2>
+<p>Startup kami menyediakan kursus online untuk siswa. Startup ini telah tumbuh dengan cepat dan sekarang kesulitan untuk memenuhi permintaan akan kursusnya. Startup telah merekrut Anda sebagai pengembang Power Platform untuk membantu mereka membangun solusi low code untuk mengelola tugas siswa dan faktur mereka. Solusi mereka harus dapat membantu mereka melacak dan mengelola tugas siswa melalui aplikasi dan mengotomatisasi proses pemrosesan faktur melalui alur kerja. Anda diminta menggunakan AI Generatif untuk mengembangkan solusi tersebut.</p>
+<p>Saat Anda memulai menggunakan Copilot, Anda dapat menggunakan <a href="https://github.com/pnp/powerplatform-prompts?WT.mc_id=academic-109639-somelezediko">Perpustakaan Prompt Copilot Power Platform</a> untuk memulai dengan prompt. Perpustakaan ini berisi daftar prompt yang dapat Anda gunakan untuk membangun aplikasi dan alur kerja dengan Copilot. Anda juga dapat menggunakan prompt dalam perpustakaan untuk mendapatkan ide bagaimana mendeskripsikan kebutuhan Anda ke Copilot.</p>
+<h3 id="bangun-aplikasi-pelacak-tugas-siswa-untuk-startup-kami">Bangun Aplikasi Pelacak Tugas Siswa untuk Startup Kami</h3>
+<p>Para pendidik di startup kami kesulitan melacak tugas siswa. Mereka telah menggunakan spreadsheet untuk melacak tugas tetapi hal ini menjadi sulit dikelola karena jumlah siswa meningkat. Mereka meminta Anda membangun aplikasi yang akan membantu mereka melacak dan mengelola tugas siswa. Aplikasi ini harus memungkinkan mereka menambah tugas baru, melihat tugas, memperbarui tugas, dan menghapus tugas. Aplikasi juga harus memungkinkan pendidik dan siswa melihat tugas yang telah dinilai dan yang belum dinilai.</p>
+<p>Anda akan membangun aplikasi menggunakan Copilot di Power Apps mengikuti langkah-langkah berikut:</p>
+<ol>
+<li>
+<p>Buka layar beranda <a href="https://make.powerapps.com?WT.mc_id=academic-105485-koreyst">Power Apps</a>.</p>
+</li>
+<li>
+<p>Gunakan area teks di layar beranda untuk mendeskripsikan aplikasi yang ingin Anda bangun. Contohnya, <strong><em>Saya ingin membangun aplikasi untuk melacak dan mengelola tugas siswa</em></strong>. Klik tombol <strong>Send</strong> untuk mengirim prompt ke AI Copilot.</p>
+</li>
+</ol>
+<p><img alt="Jelaskan aplikasi yang ingin Anda bangun" src="../translated_images/id/copilot-chat-prompt-powerapps.84250f341d060830.webp" /></p>
+<ol>
+<li>AI Copilot akan menyarankan Tabel Dataverse dengan bidang yang Anda perlukan untuk menyimpan data yang ingin dilacak dan beberapa data contoh. Anda kemudian dapat menyesuaikan tabel untuk memenuhi kebutuhan Anda menggunakan fitur asisten AI Copilot melalui langkah-langkah percakapan.</li>
+</ol>
+<blockquote>
+<p><strong>Penting</strong>: Dataverse adalah platform data dasar untuk Power Platform. Ini adalah platform data low-code untuk menyimpan data aplikasi. Ini adalah layanan yang dikelola sepenuhnya yang menyimpan data dengan aman di Microsoft Cloud dan disediakan dalam lingkungan Power Platform Anda. Dilengkapi dengan kemampuan tata kelola data bawaan, seperti klasifikasi data, jejak data, kontrol akses yang terperinci, dan lainnya. Anda dapat mempelajari lebih lanjut tentang Dataverse <a href="https://docs.microsoft.com/powerapps/maker/data-platform/data-platform-intro?WT.mc_id=academic-109639-somelezediko">di sini</a>.</p>
+</blockquote>
+<p><img alt="Bidang yang disarankan di tabel baru Anda" src="../translated_images/id/copilot-dataverse-table-powerapps.f4cc07b5d5f9327b.webp" /></p>
+<ol>
+<li>Para pendidik ingin mengirim email kepada siswa yang telah mengumpulkan tugas mereka untuk memberi tahu kemajuan tugas. Anda dapat menggunakan Copilot untuk menambahkan bidang baru ke tabel untuk menyimpan email siswa. Contohnya, Anda dapat menggunakan prompt berikut untuk menambahkan bidang baru ke tabel: <strong><em>Saya ingin menambahkan kolom untuk menyimpan email siswa</em></strong>. Klik tombol <strong>Send</strong> untuk mengirim prompt ke AI Copilot.</li>
+</ol>
+<p><img alt="Menambahkan bidang baru" src="../translated_images/id/copilot-new-column.35e15ff21acaf274.webp" /></p>
+<ol>
+<li>
+<p>AI Copilot akan menghasilkan bidang baru dan Anda kemudian dapat menyesuaikan bidang agar sesuai dengan kebutuhan Anda.</p>
+</li>
+<li>
+<p>Setelah Anda selesai dengan tabel, klik tombol <strong>Create app</strong> untuk membuat aplikasi.</p>
+</li>
+<li>
+<p>AI Copilot akan menghasilkan aplikasi Canvas yang responsif berdasarkan deskripsi Anda. Anda kemudian dapat menyesuaikan aplikasi tersebut sesuai kebutuhan Anda.</p>
+</li>
+<li>
+<p>Untuk pendidik mengirim email ke siswa, Anda dapat menggunakan Copilot untuk menambahkan layar baru ke aplikasi. Misalnya, Anda dapat menggunakan prompt berikut untuk menambahkan layar baru ke aplikasi: <strong><em>Saya ingin menambahkan layar untuk mengirim email ke siswa</em></strong>. Klik tombol <strong>Send</strong> untuk mengirim prompt ke AI Copilot.</p>
+</li>
+</ol>
+<p><img alt="Adding a new screen via a prompt instruction" src="../translated_images/id/copilot-new-screen.2e0bef7132a17392.webp" /></p>
+<ol>
+<li>
+<p>AI Copilot akan membuat layar baru dan Anda kemudian dapat menyesuaikan layar tersebut sesuai kebutuhan Anda.</p>
+</li>
+<li>
+<p>Setelah Anda selesai dengan aplikasi, klik tombol <strong>Save</strong> untuk menyimpan aplikasi.</p>
+</li>
+<li>
+<p>Untuk berbagi aplikasi dengan pendidik, klik tombol <strong>Share</strong> lalu klik tombol <strong>Share</strong> lagi. Anda kemudian dapat berbagi aplikasi dengan pendidik dengan memasukkan alamat email mereka.</p>
+</li>
+</ol>
+<blockquote>
+<p><strong>Pekerjaan rumah Anda</strong>: Aplikasi yang baru saja Anda buat adalah awal yang baik tetapi bisa ditingkatkan. Dengan fitur email, pendidik hanya dapat mengirim email ke siswa secara manual dengan mengetik email mereka. Bisakah Anda menggunakan Copilot untuk membangun otomatisasi yang memungkinkan pendidik mengirim email ke siswa secara otomatis saat mereka mengirimkan tugas? Petunjuk Anda adalah dengan prompt yang tepat Anda dapat menggunakan Copilot di Power Automate untuk membangun ini.</p>
+</blockquote>
+<h3 id="bangun-tabel-informasi-faktur-untuk-startup-kami">Bangun Tabel Informasi Faktur untuk Startup Kami</h3>
+<p>Tim keuangan startup kami mengalami kesulitan untuk melacak faktur. Mereka telah menggunakan spreadsheet untuk melacak faktur tetapi hal ini menjadi sulit untuk dikelola seiring dengan meningkatnya jumlah faktur. Mereka meminta Anda untuk membuat tabel yang akan membantu mereka menyimpan, melacak, dan mengelola informasi faktur yang mereka terima. Tabel ini harus digunakan untuk membangun otomatisasi yang akan mengekstrak semua informasi faktur dan menyimpannya dalam tabel. Tabel ini juga harus memungkinkan tim keuangan untuk melihat faktur yang sudah dibayar dan yang belum dibayar.</p>
+<p>Power Platform memiliki platform data dasar yang disebut Dataverse yang memungkinkan Anda menyimpan data untuk aplikasi dan solusi Anda. Dataverse menyediakan platform data low-code untuk menyimpan data aplikasi. Ini adalah layanan yang sepenuhnya dikelola yang menyimpan data dengan aman di Microsoft Cloud dan disediakan di dalam lingkungan Power Platform Anda. Dataverse dilengkapi dengan kapabilitas tata kelola data bawaan, seperti klasifikasi data, jejak data, kontrol akses terperinci, dan lainnya. Anda dapat mempelajari lebih lanjut <a href="https://docs.microsoft.com/powerapps/maker/data-platform/data-platform-intro?WT.mc_id=academic-109639-somelezediko">tentang Dataverse di sini</a>.</p>
+<p>Mengapa kita harus menggunakan Dataverse untuk startup kita? Tabel standar dan khusus di dalam Dataverse memberikan opsi penyimpanan yang aman dan berbasis cloud untuk data Anda. Tabel memungkinkan Anda menyimpan berbagai jenis data, mirip seperti saat Anda menggunakan beberapa lembar kerja dalam satu workbook Excel. Anda dapat menggunakan tabel untuk menyimpan data yang spesifik untuk organisasi atau kebutuhan bisnis Anda. Beberapa manfaat yang akan didapat startup kami dengan menggunakan Dataverse antara lain:</p>
+<ul>
+<li>
+<p><strong>Mudah dikelola</strong>: Baik metadata maupun data disimpan di cloud, jadi Anda tidak perlu khawatir tentang detail bagaimana mereka disimpan atau dikelola. Anda bisa fokus membangun aplikasi dan solusi Anda.</p>
+</li>
+<li>
+<p><strong>Aman</strong>: Dataverse menyediakan opsi penyimpanan yang aman dan berbasis cloud untuk data Anda. Anda dapat mengontrol siapa yang memiliki akses ke data dalam tabel Anda dan bagaimana mereka dapat mengaksesnya menggunakan keamanan berbasis peran.</p>
+</li>
+<li>
+<p><strong>Metadata yang kaya</strong>: Jenis data dan hubungan digunakan langsung dalam Power Apps</p>
+</li>
+<li>
+<p><strong>Logika dan validasi</strong>: Anda dapat menggunakan aturan bisnis, bidang terhitung, dan aturan validasi untuk menegakkan logika bisnis dan menjaga akurasi data.</p>
+</li>
+</ul>
+<p>Sekarang Anda tahu apa itu Dataverse dan mengapa Anda harus menggunakannya, mari lihat bagaimana Anda bisa menggunakan Copilot untuk membuat tabel di Dataverse agar memenuhi kebutuhan tim keuangan kita.</p>
+<blockquote>
+<p><strong>Catatan</strong> : Anda akan menggunakan tabel ini di bagian berikutnya untuk membangun otomatisasi yang akan mengekstrak semua informasi faktur dan menyimpannya dalam tabel.</p>
+</blockquote>
+<p>Untuk membuat tabel di Dataverse menggunakan Copilot, ikuti langkah-langkah berikut:</p>
+<ol>
+<li>
+<p>Buka layar beranda <a href="https://make.powerapps.com?WT.mc_id=academic-105485-koreyst">Power Apps</a>.</p>
+</li>
+<li>
+<p>Pada bilah navigasi sebelah kiri, pilih <strong>Tables</strong> lalu klik <strong>Describe the new Table</strong>.</p>
+</li>
+</ol>
+<p><img alt="Select new table" src="../translated_images/id/describe-new-table.0792373eb757281e.webp" /></p>
+<ol>
+<li>Pada layar <strong>Describe the new Table</strong>, gunakan area teks untuk mendeskripsikan tabel yang ingin Anda buat. Misalnya, <strong><em>Saya ingin membuat tabel untuk menyimpan informasi faktur</em></strong>. Klik tombol <strong>Send</strong> untuk mengirim prompt ke AI Copilot.</li>
+</ol>
+<p><img alt="Describe the table" src="../translated_images/id/copilot-chat-prompt-dataverse.feb2f81e5872b9d2.webp" /></p>
+<ol>
+<li>AI Copilot akan menyarankan sebuah Tabel Dataverse dengan kolom yang Anda butuhkan untuk menyimpan data yang ingin Anda lacak serta beberapa data contoh. Anda kemudian dapat menyesuaikan tabel sesuai kebutuhan menggunakan fitur asisten AI Copilot melalui langkah-langkah percakapan.</li>
+</ol>
+<p><img alt="Suggested Dataverse table" src="../translated_images/id/copilot-dataverse-table.b3bc936091324d9d.webp" /></p>
+<ol>
+<li>
+<p>Tim keuangan ingin mengirim email ke pemasok untuk memperbarui mereka dengan status faktur saat ini. Anda dapat menggunakan Copilot untuk menambahkan kolom baru ke tabel untuk menyimpan email pemasok. Misalnya, Anda dapat menggunakan prompt berikut untuk menambahkan kolom baru ke tabel: <strong><em>Saya ingin menambahkan kolom untuk menyimpan email pemasok</em></strong>. Klik tombol <strong>Send</strong> untuk mengirim prompt ke AI Copilot.</p>
+</li>
+<li>
+<p>AI Copilot akan membuat kolom baru dan Anda kemudian dapat menyesuaikan kolom tersebut sesuai kebutuhan Anda.</p>
+</li>
+<li>
+<p>Setelah Anda selesai dengan tabel, klik tombol <strong>Create</strong> untuk membuat tabel.</p>
+</li>
+</ol>
+<h2 id="model-ai-di-power-platform-dengan-ai-builder">Model AI di Power Platform dengan AI Builder</h2>
+<p>AI Builder adalah kemampuan AI low-code yang tersedia di Power Platform yang memungkinkan Anda menggunakan Model AI untuk membantu mengotomatisasi proses dan memprediksi hasil. Dengan AI Builder Anda dapat membawa AI ke aplikasi dan alur kerja Anda yang terhubung ke data di Dataverse atau di berbagai sumber data cloud, seperti SharePoint, OneDrive, atau Azure.</p>
+<h2 id="model-ai-prebuilt-vs-model-ai-kustom">Model AI Prebuilt vs Model AI Kustom</h2>
+<p>AI Builder menyediakan dua jenis Model AI: Model AI Prebuilt dan Model AI Kustom. Model AI Prebuilt adalah model AI siap pakai yang dilatih oleh Microsoft dan tersedia di Power Platform. Model ini membantu Anda menambahkan kecerdasan ke aplikasi dan alur tanpa harus mengumpulkan data lalu membangun, melatih, dan menerbitkan model Anda sendiri. Anda dapat menggunakan model ini untuk mengotomatisasi proses dan memprediksi hasil.</p>
+<p>Beberapa Model AI Prebuilt yang tersedia di Power Platform antara lain:</p>
+<ul>
+<li><strong>Ekstraksi Frasa Kunci</strong>: Model ini mengekstrak frasa kunci dari teks.</li>
+<li><strong>Deteksi Bahasa</strong>: Model ini mendeteksi bahasa dari sebuah teks.</li>
+<li><strong>Analisis Sentimen</strong>: Model ini mendeteksi sentimen positif, negatif, netral, atau campuran dalam teks.</li>
+<li><strong>Pembaca Kartu Bisnis</strong>: Model ini mengekstrak informasi dari kartu bisnis.</li>
+<li><strong>Pengenalan Teks</strong>: Model ini mengekstrak teks dari gambar.</li>
+<li><strong>Deteksi Objek</strong>: Model ini mendeteksi dan mengekstrak objek dari gambar.</li>
+<li><strong>Pemrosesan Dokumen</strong>: Model ini mengekstrak informasi dari formulir.</li>
+<li><strong>Pemrosesan Faktur</strong>: Model ini mengekstrak informasi dari faktur.</li>
+</ul>
+<p>Dengan Model AI Kustom, Anda dapat membawa model Anda sendiri ke AI Builder sehingga dapat berfungsi seperti model kustom AI Builder lainnya, memungkinkan Anda melatih model menggunakan data Anda sendiri. Model ini dapat digunakan untuk mengotomatisasi proses dan memprediksi hasil baik di Power Apps maupun Power Automate. Saat menggunakan model Anda sendiri, ada batasan yang berlaku. Baca lebih lanjut tentang <a href="https://learn.microsoft.com/ai-builder/byo-model#limitations?WT.mc_id=academic-105485-koreyst">batasan ini</a>.</p>
+<p><img alt="AI builder models" src="../translated_images/id/ai-builder-models.8069423b84cfc47f.webp" /></p>
+<h2 id="tugas-2-bangun-alur-pemrosesan-faktur-untuk-startup-kami">Tugas #2 - Bangun Alur Pemrosesan Faktur untuk Startup Kami</h2>
+<p>Tim keuangan mengalami kesulitan untuk memproses faktur. Mereka telah menggunakan spreadsheet untuk melacak faktur tetapi hal ini menjadi sulit untuk dikelola seiring bertambahnya jumlah faktur. Mereka meminta Anda untuk membuat alur kerja yang akan membantu mereka memproses faktur menggunakan AI. Alur kerja ini harus memungkinkan mereka mengekstrak informasi dari faktur dan menyimpan informasi tersebut dalam tabel Dataverse. Alur kerja ini juga harus memungkinkan mereka mengirim email ke tim keuangan dengan informasi yang telah diekstrak.</p>
+<p>Sekarang bahwa Anda tahu apa itu AI Builder dan mengapa harus menggunakannya, mari lihat bagaimana Anda dapat menggunakan Model AI Pemrosesan Faktur di AI Builder, yang sudah kita bahas sebelumnya, untuk membuat alur kerja yang akan membantu tim keuangan memproses faktur.</p>
+<p>Untuk membangun alur kerja yang akan membantu tim keuangan memproses faktur menggunakan Model AI Pemrosesan Faktur di AI Builder, ikuti langkah-langkah berikut:</p>
+<ol>
+<li>
+<p>Buka layar beranda <a href="https://make.powerautomate.com?WT.mc_id=academic-105485-koreyst">Power Automate</a>.</p>
+</li>
+<li>
+<p>Gunakan area teks di layar beranda untuk mendeskripsikan alur kerja yang ingin Anda buat. Misalnya, <strong><em>Proses faktur saat tiba di kotak masuk saya</em></strong>. Klik tombol <strong>Send</strong> untuk mengirim prompt ke AI Copilot.</p>
+</li>
+</ol>
+<p><img alt="Copilot power automate" src="../translated_images/id/copilot-chat-prompt-powerautomate.f377e478cc8412de.webp" /></p>
+<ol start="3">
+<li>
+<p>AI Copilot akan menyarankan tindakan yang Anda perlukan untuk melaksanakan tugas yang ingin Anda otomatisasi. Anda dapat klik tombol <strong>Next</strong> untuk melanjutkan ke langkah berikutnya.</p>
+</li>
+<li>
+<p>Pada langkah berikutnya, Power Automate akan meminta Anda mengatur koneksi yang diperlukan untuk alur tersebut. Setelah selesai, klik tombol <strong>Create flow</strong> untuk membuat alur.</p>
+</li>
+<li>
+<p>AI Copilot akan membuat alur kerja dan Anda kemudian dapat menyesuaikan alur tersebut sesuai kebutuhan Anda.</p>
+</li>
+<li>
+<p>Perbarui pemicu alur dan atur <strong>Folder</strong> ke folder tempat faktur akan disimpan. Misalnya, Anda dapat mengatur folder ke <strong>Inbox</strong>. Klik <strong>Show advanced options</strong> dan atur <strong>Only with Attachments</strong> ke <strong>Yes</strong>. Ini akan memastikan alur hanya berjalan ketika email dengan lampiran diterima di folder tersebut.</p>
+</li>
+<li>
+<p>Hapus tindakan berikut dari alur: <strong>HTML to text</strong>, <strong>Compose</strong>, <strong>Compose 2</strong>, <strong>Compose 3</strong>, dan <strong>Compose 4</strong> karena Anda tidak akan menggunakannya.</p>
+</li>
+<li>
+<p>Hapus tindakan <strong>Condition</strong> dari alur karena Anda tidak akan menggunakannya. Tampilan harus seperti tangkapan layar berikut:</p>
+</li>
+</ol>
+<p><img alt="power automate, remove actions" src="../translated_images/id/powerautomate-remove-actions.7216392fe684ceba.webp" /></p>
+<ol start="9">
+<li>
+<p>Klik tombol <strong>Add an action</strong> dan cari <strong>Dataverse</strong>. Pilih tindakan <strong>Add a new row</strong>.</p>
+</li>
+<li>
+<p>Pada tindakan <strong>Extract Information from invoices</strong>, perbarui <strong>Invoice File</strong> untuk mengarah ke <strong>Attachment Content</strong> dari email. Ini akan memastikan alur mengekstrak informasi dari lampiran faktur.</p>
+</li>
+<li>
+<p>Pilih <strong>Table</strong> yang Anda buat sebelumnya. Misalnya, pilih tabel <strong>Invoice Information</strong>. Pilih konten dinamis dari tindakan sebelumnya untuk mengisi kolom berikut:</p>
+<ul>
+<li>ID</li>
+<li>Amount</li>
+<li>Date</li>
+<li>Name</li>
+<li>Status - Atur <strong>Status</strong> ke <strong>Pending</strong>.</li>
+<li>Supplier Email - Gunakan konten dinamis <strong>From</strong> dari pemicu <strong>When a new email arrives</strong>.</li>
+</ul>
+<p><img alt="power automate add row" src="../translated_images/id/powerautomate-add-row.5edce45e5dd3d51e.webp" /></p>
+</li>
+<li>
+<p>Setelah Anda selesai dengan alur, klik tombol <strong>Save</strong> untuk menyimpan alur. Anda kemudian dapat menguji alur tersebut dengan mengirim email yang berisi faktur ke folder yang Anda tentukan pada pemicu.</p>
+</li>
+</ol>
+<blockquote>
+<p><strong>Pekerjaan rumah Anda</strong>: Alur yang baru saja Anda buat adalah awal yang baik, kini pikirkan bagaimana Anda dapat membangun otomatisasi yang memungkinkan tim keuangan kita mengirim email kepada pemasok untuk memperbarui mereka dengan status faktur saat ini. Petunjuk Anda: alur harus berjalan saat status faktur berubah.</p>
+</blockquote>
+<h2 id="gunakan-model-ai-pembuatan-teks-di-power-automate">Gunakan Model AI Pembuatan Teks di Power Automate</h2>
+<p>Model AI Create Text with GPT di AI Builder memungkinkan Anda menghasilkan teks berdasarkan prompt dan didukung oleh Layanan Microsoft Azure OpenAI. Dengan kapabilitas ini, Anda dapat menggabungkan teknologi GPT (Generative Pre-Trained Transformer) ke dalam aplikasi dan alur kerja Anda untuk membangun berbagai alur otomatis dan aplikasi yang penuh wawasan.</p>
+<p>Model GPT menjalani pelatihan intensif pada sejumlah besar data, memungkinkan mereka menghasilkan teks yang sangat mirip bahasa manusia saat diberikan prompt. Ketika terintegrasi dengan otomatisasi alur kerja, model AI seperti GPT dapat dimanfaatkan untuk menyederhanakan dan mengotomatisasi berbagai tugas.</p>
+<p>Sebagai contoh, Anda dapat membangun alur untuk secara otomatis menghasilkan teks untuk berbagai kasus penggunaan, seperti rancangan email, deskripsi produk, dan lainnya. Anda juga dapat menggunakan model ini untuk menghasilkan teks untuk berbagai aplikasi, seperti chatbot dan aplikasi layanan pelanggan yang memungkinkan agen layanan pelanggan merespon pertanyaan pelanggan secara efektif dan efisien.</p>
+<p><img alt="create a prompt" src="../translated_images/id/create-prompt-gpt.69d429300c2e870a.webp" /></p>
+<p>Untuk mempelajari cara menggunakan Model AI ini di Power Automate, pelajari modul <a href="https://learn.microsoft.com/training/modules/ai-builder-text-generation/?WT.mc_id=academic-109639-somelezediko">Tambahkan kecerdasan dengan AI Builder dan GPT</a>.</p>
+<h2 id="kerja-bagus-lanjutkan-pembelajaran-anda">Kerja Bagus! Lanjutkan Pembelajaran Anda</h2>
+<p>Setelah menyelesaikan pelajaran ini, lihat koleksi <a href="https://aka.ms/genai-collection?WT.mc_id=academic-105485-koreyst">Pembelajaran AI Generatif</a> kami untuk terus meningkatkan pengetahuan AI Generatif Anda!</p>
+<p>Ingin menyesuaikan dan mendapatkan lebih banyak dari Copilot? Jelajahi <a href="https://github.com/github/awesome-copilot?WT.mc_id=academic-105485-koreyst">Awesome Copilot</a> — koleksi kontribusi komunitas berisi instruksi, agen, keterampilan, dan konfigurasi untuk membantu Anda memaksimalkan GitHub Copilot.</p>
+<p>Langsung saja ke Pelajaran 11 di mana kita akan melihat cara <a href="../11-integrating-with-function-calling/README.html?WT.mc_id=academic-105485-koreyst">mengintegrasikan AI Generatif dengan Function Calling</a>!</p>
+<hr />
+<!-- CO-OP TRANSLATOR DISCLAIMER START -->
+<p><strong>Penafian</strong>:<br />
+Dokumen ini telah diterjemahkan menggunakan layanan terjemahan AI <a href="https://github.com/Azure/co-op-translator">Co-op Translator</a>. Meskipun kami berupaya untuk mencapai akurasi, harap diketahui bahwa terjemahan otomatis mungkin mengandung kesalahan atau ketidakakuratan. Dokumen asli dalam bahasa aslinya harus dianggap sebagai sumber yang sah. Untuk informasi penting, disarankan menggunakan terjemahan profesional oleh manusia. Kami tidak bertanggung jawab atas kesalahpahaman atau penafsiran yang keliru yang timbul dari penggunaan terjemahan ini.</p>
+<!-- CO-OP TRANSLATOR DISCLAIMER END -->
+</body>
+</html>

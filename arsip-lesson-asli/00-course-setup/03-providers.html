@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memilih & Mengonfigurasi Penyedia LLM 🔑</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.6; max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem;
+    color: #1f2328; background: #ffffff;
+  }
+  h1, h2, h3, h4 { line-height: 1.25; margin-top: 1.8em; }
+  h1 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  h2 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  a { color: #0969da; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; height: auto; }
+  pre {
+    background: #f6f8fa; padding: 1em; overflow-x: auto;
+    border-radius: 6px; font-size: 85%;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    background: #f6f8fa; padding: .2em .4em; border-radius: 4px; font-size: 85%;
+  }
+  pre code { background: none; padding: 0; }
+  table { border-collapse: collapse; display: block; overflow-x: auto; }
+  th, td { border: 1px solid #d1d9e0; padding: 6px 13px; }
+  th { background: #f6f8fa; }
+  blockquote {
+    border-left: 4px solid #d1d9e0; margin: 0; padding: 0 1em; color: #59636e;
+  }
+  hr { border: none; border-top: 1px solid #d1d9e0; margin: 2em 0; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e6edf3; background: #0d1117; }
+    h1, h2 { border-color: #30363d; }
+    a { color: #4493f8; }
+    pre, code, th { background: #161b22; }
+    th, td { border-color: #30363d; }
+    blockquote { border-color: #30363d; color: #9198a1; }
+    hr { border-color: #30363d; }
+  }
+</style>
+</head>
+<body>
+<h1 id="memilih-mengonfigurasi-penyedia-llm">Memilih &amp; Mengonfigurasi Penyedia LLM 🔑</h1>
+<p>Tugas <strong>mungkin</strong> juga dapat diatur untuk bekerja dengan satu atau beberapa penerapan Large Language Model (LLM) melalui penyedia layanan yang didukung seperti OpenAI, Azure, atau Hugging Face. Mereka menyediakan <em>hosted endpoint</em> (API) yang dapat kita akses secara programatik dengan kredensial yang tepat (kunci API atau token). Dalam kursus ini, kami membahas penyedia berikut:</p>
+<ul>
+<li><a href="https://platform.openai.com/docs/models?WT.mc_id=academic-105485-koreyst">OpenAI</a> dengan beragam model termasuk seri GPT inti.</li>
+<li><a href="https://learn.microsoft.com/azure/ai-services/openai/?WT.mc_id=academic-105485-koreyst">Azure OpenAI</a> untuk model OpenAI dengan fokus pada kesiapan perusahaan</li>
+<li><a href="https://ai.azure.com/catalog/models?WT.mc_id=academic-105485-koreyst">Microsoft Foundry Models</a> untuk satu endpoint dan kunci API untuk mengakses ratusan model dari OpenAI, Meta, Mistral, Cohere, Microsoft, dan lain-lain (menggantikan GitHub Models, yang akan dihentikan pada akhir Juli 2026)</li>
+<li><a href="https://huggingface.co/docs/hub/index?WT.mc_id=academic-105485-koreyst">Hugging Face</a> untuk model open-source dan server inferensi</li>
+<li><a href="https://foundrylocal.ai?WT.mc_id=academic-105485-koreyst">Foundry Local</a> atau <a href="https://ollama.com/?WT.mc_id=academic-105485-koreyst">Ollama</a> jika Anda lebih suka menjalankan model sepenuhnya offline di perangkat Anda sendiri, tanpa langganan cloud yang diperlukan</li>
+</ul>
+<p><strong>Anda perlu menggunakan akun Anda sendiri untuk latihan ini</strong>. Tugas bersifat opsional sehingga Anda bisa memilih untuk mengatur satu, semua - atau tidak sama sekali - penyedia sesuai minat Anda. Berikut beberapa panduan pendaftaran:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Daftar</th>
+<th style="text-align: left;">Biaya</th>
+<th style="text-align: left;">Kunci API</th>
+<th style="text-align: left;">Playground</th>
+<th style="text-align: left;">Komentar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="https://platform.openai.com/signup?WT.mc_id=academic-105485-koreyst">OpenAI</a></td>
+<td style="text-align: left;"><a href="https://openai.com/pricing#language-models?WT.mc_id=academic-105485-koreyst">Harga</a></td>
+<td style="text-align: left;"><a href="https://platform.openai.com/api-keys?WT.mc_id=academic-105485-koreyst">Berbasis Proyek</a></td>
+<td style="text-align: left;"><a href="https://platform.openai.com/playground?WT.mc_id=academic-105485-koreyst">Tanpa Kode, Web</a></td>
+<td style="text-align: left;">Banyak Model Tersedia</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://aka.ms/azure/free?WT.mc_id=academic-105485-koreyst">Azure</a></td>
+<td style="text-align: left;"><a href="https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/?WT.mc_id=academic-105485-koreyst">Harga</a></td>
+<td style="text-align: left;"><a href="https://learn.microsoft.com/azure/ai-services/openai/quickstart?WT.mc_id=academic-105485-koreyst">SDK Quickstart</a></td>
+<td style="text-align: left;"><a href="https://learn.microsoft.com/azure/ai-services/openai/quickstart?WT.mc_id=academic-105485-koreyst">Studio Quickstart</a></td>
+<td style="text-align: left;"><a href="https://learn.microsoft.com/azure/ai-services/openai/?WT.mc_id=academic-105485-koreyst">Harus Mendaftar Terlebih Dahulu</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://ai.azure.com?WT.mc_id=academic-105485-koreyst">Microsoft Foundry</a></td>
+<td style="text-align: left;"><a href="https://azure.microsoft.com/pricing/details/ai-foundry/?WT.mc_id=academic-105485-koreyst">Harga</a></td>
+<td style="text-align: left;"><a href="https://learn.microsoft.com/en-us/azure/ai-foundry/model-inference/overview?WT.mc_id=academic-105485-koreyst">Halaman Ringkasan Proyek</a></td>
+<td style="text-align: left;"><a href="https://ai.azure.com/catalog/models?WT.mc_id=academic-105485-koreyst">Playground Foundry</a></td>
+<td style="text-align: left;">Tier gratis tersedia; satu endpoint + kunci untuk banyak penyedia model</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://huggingface.co/join?WT.mc_id=academic-105485-koreyst">Hugging Face</a></td>
+<td style="text-align: left;"><a href="https://huggingface.co/pricing">Harga</a></td>
+<td style="text-align: left;"><a href="https://huggingface.co/docs/hub/security-tokens?WT.mc_id=academic-105485-koreyst">Token Akses</a></td>
+<td style="text-align: left;"><a href="https://huggingface.co/chat/?WT.mc_id=academic-105485-koreyst">Hugging Chat</a></td>
+<td style="text-align: left;"><a href="https://huggingface.co/chat/models?WT.mc_id=academic-105485-koreyst">Hugging Chat memiliki model terbatas</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://foundrylocal.ai?WT.mc_id=academic-105485-koreyst">Foundry Local</a></td>
+<td style="text-align: left;">Gratis (dijalankan di perangkat Anda)</td>
+<td style="text-align: left;">Tidak diperlukan</td>
+<td style="text-align: left;"><a href="https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-local/get-started?WT.mc_id=academic-105485-koreyst">CLI/SDK Lokal</a></td>
+<td style="text-align: left;">Endpoint kompatibel OpenAI sepenuhnya offline</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<p>Ikuti petunjuk di bawah ini untuk <em>mengonfigurasi</em> repositori ini agar dapat digunakan dengan penyedia berbeda. Tugas yang membutuhkan penyedia tertentu akan berisi salah satu tag ini di nama file mereka:</p>
+<ul>
+<li><code>aoai</code> - membutuhkan endpoint Azure OpenAI, kunci</li>
+<li><code>oai</code> - membutuhkan endpoint OpenAI, kunci</li>
+<li><code>hf</code> - membutuhkan token Hugging Face</li>
+<li><code>githubmodels</code> - membutuhkan endpoint Microsoft Foundry Models, kunci (GitHub Models akan dihentikan pada akhir Juli 2026)</li>
+</ul>
+<p>Anda dapat mengonfigurasi satu, tidak sama sekali, atau semua penyedia. Tugas terkait hanya akan memberikan error jika kredensial hilang.</p>
+<h2 id="buat-file-env">Buat file <code>.env</code></h2>
+<p>Kami mengasumsikan Anda sudah membaca panduan di atas dan mendaftar dengan penyedia yang relevan, serta mendapatkan kredensial autentikasi yang diperlukan (API_KEY atau token). Dalam kasus Azure OpenAI, kami juga mengasumsikan Anda memiliki penerapan Azure OpenAI Service (endpoint) yang valid dengan setidaknya satu model GPT yang diterapkan untuk chat completion.</p>
+<p>Langkah berikutnya adalah mengonfigurasi <strong>variabel lingkungan lokal</strong> Anda sebagai berikut:</p>
+<ol>
+<li>Cari di folder root file <code>.env.copy</code> yang harus berisi seperti ini:</li>
+</ol>
+<p>```bash<br />
+   # Penyedia OpenAI<br />
+   OPENAI_API_KEY='<add your OpenAI API key here>'</p>
+<p>## Azure OpenAI di Microsoft Foundry<br />
+   ## (Layanan Azure OpenAI sekarang bagian dari Microsoft Foundry: https://ai.azure.com)<br />
+   AZURE_OPENAI_API_VERSION='2024-10-21' # Default sudah diatur! (versi API GA stabil saat ini)<br />
+   AZURE_OPENAI_API_KEY='<add your Foundry resource key here>'<br />
+   AZURE_OPENAI_ENDPOINT='<add your Foundry resource endpoint here, e.g. https://\<resource-name>.openai.azure.com>'<br />
+   AZURE_OPENAI_DEPLOYMENT='<add your chat completion model deployment name here, e.g. gpt-4o-mini>'<br />
+   AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT='<add your embeddings model deployment name here, e.g. text-embedding-3-small>'</p>
+<p>## Model Microsoft Foundry (katalog model multi-penyedia, menggantikan Model GitHub, yang akan pensiun akhir Juli 2026)<br />
+   AZURE_INFERENCE_ENDPOINT='<add your Microsoft Foundry project endpoint here>'<br />
+   AZURE_INFERENCE_CREDENTIAL='<add your Microsoft Foundry Models API key here>'</p>
+<p>## Hugging Face<br />
+   HUGGING_FACE_API_KEY='<add your HuggingFace API or token here>'<br />
+   ```</p>
+<ol start="2">
+<li>Salin file tersebut ke <code>.env</code> menggunakan perintah di bawah ini. File ini <em>gitignore-d</em>, menjaga rahasia tetap aman.</li>
+</ol>
+<p><code>bash
+   cp .env.copy .env</code></p>
+<ol start="3">
+<li>
+<p>Isi nilai-nilainya (ganti placeholder di sebelah kanan tanda <code>=</code>) seperti yang dijelaskan di bagian berikut.</p>
+</li>
+<li>
+<p>(Opsional) Jika Anda menggunakan GitHub Codespaces, Anda memiliki opsi menyimpan variabel lingkungan sebagai <em>Codespaces secrets</em> yang terkait dengan repositori ini. Dalam hal ini, Anda tidak perlu mengatur file .env lokal. <strong>Namun, perhatikan bahwa opsi ini hanya berfungsi jika Anda menggunakan GitHub Codespaces.</strong> Anda tetap perlu mengatur file .env jika menggunakan Docker Desktop.</p>
+</li>
+</ol>
+<h2 id="isi-file-env">Isi file <code>.env</code></h2>
+<p>Mari kita lihat sekilas nama variabel untuk memahami apa yang mereka wakili:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Variabel</th>
+<th style="text-align: left;">Deskripsi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">HUGGING_FACE_API_KEY</td>
+<td style="text-align: left;">Ini adalah token akses pengguna yang Anda atur di profil Anda</td>
+</tr>
+<tr>
+<td style="text-align: left;">OPENAI_API_KEY</td>
+<td style="text-align: left;">Ini adalah kunci otorisasi untuk menggunakan layanan selain endpoint Azure OpenAI</td>
+</tr>
+<tr>
+<td style="text-align: left;">AZURE_OPENAI_API_KEY</td>
+<td style="text-align: left;">Ini adalah kunci otorisasi untuk menggunakan layanan tersebut</td>
+</tr>
+<tr>
+<td style="text-align: left;">AZURE_OPENAI_ENDPOINT</td>
+<td style="text-align: left;">Ini adalah endpoint yang diterapkan untuk sumber daya Azure OpenAI</td>
+</tr>
+<tr>
+<td style="text-align: left;">AZURE_OPENAI_DEPLOYMENT</td>
+<td style="text-align: left;">Ini adalah endpoint penerapan model <em>text generation</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT</td>
+<td style="text-align: left;">Ini adalah endpoint penerapan model <em>text embeddings</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">AZURE_INFERENCE_ENDPOINT</td>
+<td style="text-align: left;">Ini adalah endpoint untuk proyek Microsoft Foundry Anda, dipakai untuk Microsoft Foundry Models</td>
+</tr>
+<tr>
+<td style="text-align: left;">AZURE_INFERENCE_CREDENTIAL</td>
+<td style="text-align: left;">Ini adalah kunci API untuk proyek Microsoft Foundry Anda</td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<p>Catatan: Dua variabel Azure OpenAI terakhir mencerminkan model default untuk chat completion (text generation) dan pencarian vektor (embeddings) masing-masing. Instruksi untuk mengaturnya akan didefinisikan dalam tugas terkait.</p>
+<h2 id="konfigurasi-azure-openai-dari-portal">Konfigurasi Azure OpenAI: Dari Portal</h2>
+<blockquote>
+<p><strong>Catatan:</strong> Azure OpenAI Service sekarang bagian dari <a href="https://ai.azure.com?WT.mc_id=academic-105485-koreyst">Microsoft Foundry</a>. Sumber daya dan penerapan masih muncul di Azure Portal, tetapi manajemen model sehari-hari (penerapan, playground, pemantauan) sekarang dilakukan di portal Foundry daripada "Azure OpenAI Studio" lama yang berdiri sendiri.</p>
+</blockquote>
+<p>Nilai endpoint dan kunci Azure OpenAI akan ditemukan di <a href="https://portal.azure.com?WT.mc_id=academic-105485-koreyst">Azure Portal</a> jadi mari mulai dari sana.</p>
+<ol>
+<li>Buka <a href="https://portal.azure.com?WT.mc_id=academic-105485-koreyst">Azure Portal</a></li>
+<li>Klik opsi <strong>Keys and Endpoint</strong> di sidebar (menu sebelah kiri).</li>
+<li>Klik <strong>Show Keys</strong> - Anda akan melihat: KEY 1, KEY 2 dan Endpoint.</li>
+<li>Gunakan nilai KEY 1 untuk AZURE_OPENAI_API_KEY</li>
+<li>Gunakan nilai Endpoint untuk AZURE_OPENAI_ENDPOINT</li>
+</ol>
+<p>Selanjutnya, kita butuh endpoint untuk model spesifik yang telah kita terapkan.</p>
+<ol>
+<li>Klik opsi <strong>Model deployments</strong> di sidebar (menu kiri) untuk sumber daya Azure OpenAI.</li>
+<li>Di halaman tujuan, klik <strong>Go to Microsoft Foundry portal</strong> (atau <strong>Manage Deployments</strong>, tergantung tipe sumber daya Anda)</li>
+</ol>
+<p>Ini akan membawa Anda ke portal Microsoft Foundry, tempat kita akan menemukan nilai lain sebagaimana dijelaskan di bawah.</p>
+<h2 id="konfigurasi-azure-openai-dari-portal-microsoft-foundry">Konfigurasi Azure OpenAI: Dari portal Microsoft Foundry</h2>
+<ol>
+<li>Navigasi ke <a href="https://ai.azure.com?WT.mc_id=academic-105485-koreyst">portal Microsoft Foundry</a> <strong>dari sumber daya Anda</strong> seperti dijelaskan di atas.</li>
+<li>Klik tab <strong>Deployments</strong> (sidebar, kiri) untuk melihat model yang saat ini diterapkan.</li>
+<li>Jika model yang Anda inginkan belum diterapkan, gunakan <strong>Deploy model</strong> untuk menerapkannya dari <a href="https://ai.azure.com/catalog/models?WT.mc_id=academic-105485-koreyst">katalog model</a>.</li>
+<li>Anda memerlukan model <em>text-generation</em> - kami rekomendasikan: <strong>gpt-4o-mini</strong></li>
+<li>Anda memerlukan model <em>text-embedding</em> - kami rekomendasikan <strong>text-embedding-3-small</strong></li>
+</ol>
+<p>Sekarang perbarui variabel lingkungan untuk mencerminkan <em>Deployment name</em> yang digunakan. Ini biasanya sama dengan nama model kecuali Anda mengubahnya secara eksplisit. Jadi, sebagai contoh, Anda mungkin memiliki:</p>
+<pre><code class="language-bash">AZURE_OPENAI_DEPLOYMENT='gpt-4o-mini'
+AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT='text-embedding-3-small'
+</code></pre>
+<p><strong>Jangan lupa simpan file .env saat selesai</strong>. Anda sekarang dapat keluar dari file dan kembali ke petunjuk menjalankan notebook.</p>
+<h2 id="konfigurasi-openai-dari-profil">Konfigurasi OpenAI: Dari Profil</h2>
+<p>Kunci API OpenAI Anda dapat ditemukan di <a href="https://platform.openai.com/api-keys?WT.mc_id=academic-105485-koreyst">akun OpenAI Anda</a>. Jika belum punya, Anda dapat mendaftar akun dan membuat kunci API. Setelah mendapat kunci, Anda dapat mengisinya ke variabel <code>OPENAI_API_KEY</code> di file <code>.env</code>.</p>
+<h2 id="konfigurasi-hugging-face-dari-profil">Konfigurasi Hugging Face: Dari Profil</h2>
+<p>Token Hugging Face Anda dapat ditemukan di profil Anda di bawah <a href="https://huggingface.co/settings/tokens?WT.mc_id=academic-105485-koreyst">Access Tokens</a>. Jangan posting atau bagikan token ini secara publik. Sebagai gantinya, buat token baru untuk penggunaan proyek ini dan salin ke file <code>.env</code> di bawah variabel <code>HUGGING_FACE_API_KEY</code>. <em>Catatan:</em> Ini sebenarnya bukan kunci API, tapi digunakan untuk autentikasi sehingga kita mempertahankan nama ini agar konsisten.</p>
+<h2 id="konfigurasi-microsoft-foundry-models-dari-portal">Konfigurasi Microsoft Foundry Models: Dari Portal</h2>
+<blockquote>
+<p><strong>Catatan:</strong> GitHub Models akan dihentikan pada akhir Juli 2026. Microsoft Foundry Models adalah pengganti langsungnya, menawarkan katalog model gratis untuk dicoba dan pengalaman Azure AI Inference SDK / OpenAI SDK yang sama.</p>
+</blockquote>
+<ol>
+<li>Pergi ke <a href="https://ai.azure.com?WT.mc_id=academic-105485-koreyst">Microsoft Foundry</a> dan buat (atau buka) proyek Foundry.</li>
+<li>Jelajahi <a href="https://ai.azure.com/catalog/models?WT.mc_id=academic-105485-koreyst">katalog model</a> dan terapkan sebuah model, misalnya <code>gpt-4o-mini</code>.</li>
+<li>Pada halaman <strong>Overview</strong> proyek, salin <strong>endpoint</strong> dan <strong>kunci API</strong>.</li>
+<li>Gunakan nilai endpoint untuk <code>AZURE_INFERENCE_ENDPOINT</code> dan nilai kunci untuk <code>AZURE_INFERENCE_CREDENTIAL</code> di file <code>.env</code> Anda.</li>
+</ol>
+<h2 id="penyedia-offline-lokal">Penyedia Offline / Lokal</h2>
+<p>Jika Anda tidak ingin menggunakan langganan cloud sama sekali, Anda dapat menjalankan model open compatible langsung di perangkat Anda sendiri:</p>
+<ul>
+<li><strong><a href="https://foundrylocal.ai?WT.mc_id=academic-105485-koreyst">Foundry Local</a></strong> - runtime on-device Microsoft. Ia secara otomatis memilih penyedia eksekusi terbaik (NPU, GPU, atau CPU) dan menyediakan endpoint kompatibel OpenAI, jadi Anda bisa menggunakan kembali sebagian besar kode contoh dalam kursus ini dengan sedikit perubahan. Lihat <a href="https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-local/get-started?WT.mc_id=academic-105485-koreyst">dokumentasi Foundry Local</a> untuk memulai, atau instal dengan <code>winget install Microsoft.FoundryLocal</code> (Windows) / <code>brew install microsoft/foundrylocal/foundrylocal</code> (macOS).</li>
+<li><strong><a href="https://ollama.com/?WT.mc_id=academic-105485-koreyst">Ollama</a></strong> - alternatif populer untuk menjalankan model open seperti Llama, Phi, Mistral, dan Gemma secara lokal.</li>
+</ul>
+<p>Lihat <a href="../19-slm/README.html?WT.mc_id=academic-105485-koreyst">Lesson 19: Building with SLMs</a> untuk contoh langsung menggunakan kedua opsi tersebut.</p>
+<hr />
+<!-- CO-OP TRANSLATOR DISCLAIMER START -->
+<p><strong>Penafian</strong>:<br />
+Dokumen ini telah diterjemahkan menggunakan layanan terjemahan AI <a href="https://github.com/Azure/co-op-translator">Co-op Translator</a>. Meskipun kami berupaya untuk mencapai akurasi, harap diketahui bahwa terjemahan otomatis mungkin mengandung kesalahan atau ketidakakuratan. Dokumen asli dalam bahasa aslinya harus dianggap sebagai sumber yang sah. Untuk informasi penting, disarankan menggunakan terjemahan profesional oleh manusia. Kami tidak bertanggung jawab atas kesalahpahaman atau penafsiran yang keliru yang timbul dari penggunaan terjemahan ini.</p>
+<!-- CO-OP TRANSLATOR DISCLAIMER END -->
+</body>
+</html>

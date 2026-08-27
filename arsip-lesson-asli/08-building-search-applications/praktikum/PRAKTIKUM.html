@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Praktikum 08 — Aplikasi Pencarian Semantik (Embeddings)</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.6; max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem;
+    color: #1f2328; background: #ffffff;
+  }
+  h1, h2, h3, h4 { line-height: 1.25; margin-top: 1.8em; }
+  h1 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  h2 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  a { color: #0969da; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; height: auto; }
+  pre {
+    background: #f6f8fa; padding: 1em; overflow-x: auto;
+    border-radius: 6px; font-size: 85%;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    background: #f6f8fa; padding: .2em .4em; border-radius: 4px; font-size: 85%;
+  }
+  pre code { background: none; padding: 0; }
+  table { border-collapse: collapse; display: block; overflow-x: auto; }
+  th, td { border: 1px solid #d1d9e0; padding: 6px 13px; }
+  th { background: #f6f8fa; }
+  blockquote {
+    border-left: 4px solid #d1d9e0; margin: 0; padding: 0 1em; color: #59636e;
+  }
+  hr { border: none; border-top: 1px solid #d1d9e0; margin: 2em 0; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e6edf3; background: #0d1117; }
+    h1, h2 { border-color: #30363d; }
+    a { color: #4493f8; }
+    pre, code, th { background: #161b22; }
+    th, td { border-color: #30363d; }
+    blockquote { border-color: #30363d; color: #9198a1; }
+    hr { border-color: #30363d; }
+  }
+</style>
+</head>
+<body>
+<h1 id="praktikum-08-aplikasi-pencarian-semantik-embeddings">Praktikum 08 — Aplikasi Pencarian Semantik (Embeddings)</h1>
+<p>Versi hands-on dari materi <a href="../README.html">README.md</a>, memakai server Ollama kampus — tanpa API key. Kamu membangun mesin pencari yang memahami <strong>makna</strong>, bukan sekadar mencocokkan kata.</p>
+<h2 id="tujuan-pembelajaran">Tujuan Pembelajaran</h2>
+<ol>
+<li>Memahami <strong>embedding</strong>: representasi teks sebagai vektor angka, sehingga "makna" bisa dihitung secara matematis.</li>
+<li>Menghitung <strong>cosine similarity</strong> (ukuran kemiripan dua vektor: 1 = identik, 0 = tak berhubungan) dari nol, tanpa library ML.</li>
+<li>Membangun <strong>pencarian semantik</strong>: menemukan dokumen relevan meski kata kuncinya tidak sama persis.</li>
+</ol>
+<h2 id="prasyarat">Prasyarat</h2>
+<ul>
+<li>Sudah menyelesaikan <a href="../../04-prompt-engineering-fundamentals/praktikum/PRAKTIKUM.html">Praktikum 04</a>.</li>
+<li>Ingat matematika vektor dasar (dot product, panjang vektor) — dipandu di docstring.</li>
+</ul>
+<blockquote>
+<p><strong>Penting:</strong> praktikum ini memakai model <strong>embedding</strong> (<code>bge-m3</code>), bukan model chat. Model embedding tidak "menjawab" — ia hanya mengubah teks menjadi vektor.</p>
+</blockquote>
+<h2 id="urutan-kerja">Urutan Kerja</h2>
+<p>Semua perintah dari folder ini: <code>cd 08-building-search-applications/praktikum</code></p>
+<table>
+<thead>
+<tr>
+<th>No</th>
+<th>Langkah</th>
+<th>Perintah</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td><strong>Buat environment</strong></td>
+<td><code>python3 -m venv .venv</code></td>
+</tr>
+<tr>
+<td>02</td>
+<td><strong>Aktifkan</strong></td>
+<td><code>source .venv/bin/activate</code></td>
+</tr>
+<tr>
+<td>03</td>
+<td><strong>Pasang library</strong></td>
+<td><code>pip install -r requirements.txt</code></td>
+</tr>
+<tr>
+<td>04</td>
+<td><strong>Cek kesiapan</strong></td>
+<td><code>python src/cek_env.py</code> → pastikan <code>bge-m3</code> ada di daftar model</td>
+</tr>
+<tr>
+<td>05</td>
+<td><strong>Isi TODO</strong></td>
+<td>Kerjakan 3 fungsi di <code>src/main.py</code></td>
+</tr>
+<tr>
+<td>06</td>
+<td><strong>Jalankan</strong></td>
+<td><code>python src/main.py</code></td>
+</tr>
+<tr>
+<td>07</td>
+<td><strong>Uji jawaban</strong></td>
+<td><code>pytest -q</code> (target: <code>5 passed</code>)</td>
+</tr>
+<tr>
+<td>08</td>
+<td><strong>Eksplorasi</strong></td>
+<td>Tantangan di bagian bawah</td>
+</tr>
+</tbody>
+</table>
+<p>Detail tiap langkah ada di bawah. <strong>Jangan lompat-lompat</strong> — tiap langkah bergantung pada langkah sebelumnya.</p>
+<hr />
+<h2 id="langkah-0102-buat-aktifkan-environment">Langkah 01–02: Buat &amp; Aktifkan Environment</h2>
+<p><strong>Kenapa?</strong> <em>Virtual environment</em> (venv) mengisolasi library praktikum ini agar tidak bercampur dengan proyek lain.</p>
+<pre><code class="language-bash">python3 -m venv .venv
+source .venv/bin/activate
+</code></pre>
+<p>✅ <strong>Hasil:</strong> muncul awalan <code>(.venv)</code> di kiri prompt terminal.</p>
+<h2 id="langkah-03-pasang-library">Langkah 03: Pasang Library</h2>
+<p><strong>Kenapa?</strong> Kita butuh <code>requests</code> (mengirim HTTP request ke server AI) dan <code>pytest</code> (menguji jawabanmu otomatis).</p>
+<pre><code class="language-bash">pip install -r requirements.txt
+</code></pre>
+<p>✅ <strong>Hasil:</strong> baris terakhir kurang lebih <code>Successfully installed requests-... pytest-...</code> tanpa error merah.</p>
+<h2 id="langkah-04-cek-kesiapan">Langkah 04: Cek Kesiapan</h2>
+<p><strong>Kenapa?</strong> Sebelum menulis kode, pastikan environment benar dan server AI kampus bisa dijangkau — supaya kalau nanti ada error, kamu tahu itu bukan masalah koneksi.</p>
+<pre><code class="language-bash">python src/cek_env.py
+</code></pre>
+<p>✅ <strong>Hasil:</strong> semua baris <code>[OK]</code>, daftar model yang tersedia, dan tulisan <code>SIAP!</code>.</p>
+<p>📌 <strong>Penting:</strong> pastikan <code>bge-m3</code> muncul di daftar model — itulah model <strong>embedding</strong> yang dipakai praktikum ini (bukan model chat). Kalau ingin memakai model embedding lain, daftarkan lewat:</p>
+<pre><code class="language-bash">export OLLAMA_EMBED_MODEL=&quot;bge-m3:latest&quot;
+</code></pre>
+<blockquote>
+<p>Kalau ada baris <code>[GAGAL]</code>: biasanya library belum terpasang (ulangi langkah 03) atau koneksi ke server bermasalah (lapor ke aslab).</p>
+</blockquote>
+<h2 id="langkah-05-isi-todo-di-srcmainpy">Langkah 05: Isi TODO di <code>src/main.py</code></h2>
+<p>Ada <strong>3 fungsi</strong> yang harus kamu lengkapi. Tiap fungsi sudah berisi petunjuk langkah demi langkah di dalam docstring-nya. Kerjakan berurutan:</p>
+<h3 id="todo-1-embeddingteks">TODO 1 — <code>embedding(teks)</code></h3>
+<p><strong>Kenapa?</strong> Pintu ke model embedding via <code>/api/embeddings</code> — teks masuk, vektor keluar.</p>
+<h3 id="todo-2-cosine_similaritya-b">TODO 2 — <code>cosine_similarity(a, b)</code></h3>
+<p><strong>Kenapa?</strong> Inti matematika pencarian semantik; kamu tulis sendiri agar paham, bukan pakai numpy.</p>
+<h3 id="todo-3-cariquery-dokumen-k">TODO 3 — <code>cari(query, dokumen, k)</code></h3>
+<p><strong>Kenapa?</strong> Merangkai 1+2 jadi mesin pencari: embed semua → skor → urutkan.</p>
+<p>💡 Kerjakan satu TODO → langsung lompat ke langkah 06 untuk melihat hasilnya → kembali kerjakan TODO berikutnya. Demo yang TODO-nya belum selesai otomatis dilewati.</p>
+<h2 id="langkah-06-jalankan">Langkah 06: Jalankan</h2>
+<pre><code class="language-bash">python src/main.py
+</code></pre>
+<p><strong>Kenapa?</strong> Script ini menjalankan demo yang membuktikan konsep dari materi. Amati:</p>
+<ul>
+<li><strong>Demo 1:</strong> satu kalimat menjadi vektor ratusan/ribuan dimensi.</li>
+<li><strong>Demo 2:</strong> "kucing duduk di sofa" vs "seekor kucing bersantai di kursi" berskor <strong>tinggi</strong> (semakna, kata beda); vs "harga saham naik" berskor <strong>rendah</strong>.</li>
+<li><strong>Demo 3:</strong> query "bagaimana cara membuat chatbot?" → dokumen Pertemuan 07 harus peringkat 1, padahal tidak ada kata "membuat" atau "bagaimana" di dokumennya.</li>
+</ul>
+<p>✅ <strong>Hasil:</strong> ketiga demo tampil tanpa <code>[LEWAT]</code>. Kalau masih ada <code>[LEWAT] TODO x belum dikerjakan</code>, kembali ke langkah 05.</p>
+<h3 id="checkpoint-1">🧠 Checkpoint 1</h3>
+<p>Mengapa pencarian kata kunci biasa (mis. <code>if "chatbot" in dokumen</code>) gagal untuk query "cara bikin bot ngobrol", sedangkan pencarian semantik tetap berhasil?</p>
+<h2 id="langkah-07-uji-jawaban">Langkah 07: Uji Jawaban</h2>
+<pre><code class="language-bash">pytest -q
+</code></pre>
+<p><strong>Kenapa?</strong> Tes otomatis memeriksa apakah fungsimu benar — bukan cuma "jalan tanpa error", tapi hasilnya sesuai spesifikasi.</p>
+<p>✅ <strong>Hasil:</strong> semua tes hijau — <code>5 passed</code>.</p>
+<blockquote>
+<p>Kalau ada <code>FAILED</code>, baca nama tesnya untuk tahu TODO mana yang belum sesuai. Kalau ada <code>skipped</code>, artinya server tidak terjangkau saat tes jalan.</p>
+</blockquote>
+<h2 id="langkah-08-eksplorasi">Langkah 08: Eksplorasi</h2>
+<ol>
+<li>Tambahkan 4 dokumen baru bertema bebas ke <code>DOKUMEN</code>, lalu uji 3 query berbeda.</li>
+<li>Ubah <code>cari</code> agar meng-embed dokumen <strong>sekali saja</strong> (simpan di list/dict), bukan setiap query. Ukur bedanya dengan <code>time.perf_counter()</code>.</li>
+<li>(Bonus) Bandingkan hasil <code>bge-m3</code> dengan <code>nomic-embed-text</code> (ganti <code>OLLAMA_EMBED_MODEL</code>) — mana lebih baik untuk bahasa Indonesia?</li>
+</ol>
+<h3 id="checkpoint-2">🧠 Checkpoint 2</h3>
+<p>Demo 3 meng-embed SEMUA dokumen setiap kali mencari. Apa masalahnya jika dokumennya 1 juta? Apa solusinya? (petunjuk: simpan vektor sekali di awal → itulah <em>vector database</em>, dibahas di praktikum 15)</p>
+<hr />
+<h2 id="rangkuman">Rangkuman</h2>
+<ul>
+<li><strong>Embedding</strong> mengubah teks menjadi vektor angka sehingga "makna" bisa dihitung secara matematis.</li>
+<li><strong>Cosine similarity</strong> mengukur kemiripan dua vektor: 1 = identik, 0 = tak berhubungan.</li>
+<li><strong>Pencarian semantik</strong> menemukan dokumen relevan meski kata kuncinya tidak sama persis — kelemahan utama pencarian kata kunci biasa.</li>
+<li>Meng-embed semua dokumen di setiap query tidak skalabel — simpan vektor sekali di awal; itulah esensi <em>vector database</em>.</li>
+</ul>
+<h2 id="yang-dikumpulkan">Yang Dikumpulkan</h2>
+<ol>
+<li><code>src/main.py</code> dengan 3 TODO selesai + screenshot <code>pytest -q</code> hijau.</li>
+<li>Jawaban Checkpoint 1 &amp; 2.</li>
+<li>Hasil eksplorasi no. 2 (kode + perbandingan waktu).</li>
+</ol>
+<blockquote>
+<p>Kunci jawaban di <code>solusi/main_solusi.py</code> — gunakan hanya jika mentok.</p>
+</blockquote>
+</body>
+</html>

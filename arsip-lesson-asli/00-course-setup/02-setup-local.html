@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pengaturan Lokal 🖥️</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.6; max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem;
+    color: #1f2328; background: #ffffff;
+  }
+  h1, h2, h3, h4 { line-height: 1.25; margin-top: 1.8em; }
+  h1 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  h2 { border-bottom: 1px solid #d1d9e0; padding-bottom: .3em; }
+  a { color: #0969da; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; height: auto; }
+  pre {
+    background: #f6f8fa; padding: 1em; overflow-x: auto;
+    border-radius: 6px; font-size: 85%;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    background: #f6f8fa; padding: .2em .4em; border-radius: 4px; font-size: 85%;
+  }
+  pre code { background: none; padding: 0; }
+  table { border-collapse: collapse; display: block; overflow-x: auto; }
+  th, td { border: 1px solid #d1d9e0; padding: 6px 13px; }
+  th { background: #f6f8fa; }
+  blockquote {
+    border-left: 4px solid #d1d9e0; margin: 0; padding: 0 1em; color: #59636e;
+  }
+  hr { border: none; border-top: 1px solid #d1d9e0; margin: 2em 0; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e6edf3; background: #0d1117; }
+    h1, h2 { border-color: #30363d; }
+    a { color: #4493f8; }
+    pre, code, th { background: #161b22; }
+    th, td { border-color: #30363d; }
+    blockquote { border-color: #30363d; color: #9198a1; }
+    hr { border-color: #30363d; }
+  }
+</style>
+</head>
+<body>
+<h1 id="pengaturan-lokal">Pengaturan Lokal 🖥️</h1>
+<p><strong>Gunakan panduan ini jika Anda lebih suka menjalankan semuanya di laptop Anda sendiri.</strong> <br />
+Anda memiliki dua pilihan: <strong>(A) Python native + virtual-env</strong> atau <strong>(B) VS Code Dev Container dengan Docker</strong>.<br />
+Pilih yang menurut Anda lebih mudah—keduanya mengarah ke pelajaran yang sama.</p>
+<h2 id="1-persyaratan-awal">1. Persyaratan Awal</h2>
+<table>
+<thead>
+<tr>
+<th>Alat</th>
+<th>Versi / Catatan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Python</strong></td>
+<td>3.10 + (dapatkan dari <a href="https://python.org">https://python.org</a>)</td>
+</tr>
+<tr>
+<td><strong>Git</strong></td>
+<td>Terbaru (terminasuk dengan Xcode / Git untuk Windows / package manager Linux)</td>
+</tr>
+<tr>
+<td><strong>VS Code</strong></td>
+<td>Opsional tapi direkomendasikan <a href="https://code.visualstudio.com">https://code.visualstudio.com</a></td>
+</tr>
+<tr>
+<td><strong>Docker Desktop</strong></td>
+<td><em>Hanya</em> untuk Opsi B. Instal gratis: <a href="https://docs.docker.com/desktop/">https://docs.docker.com/desktop/</a></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡 <strong>Tips</strong> – Verifikasi alat di terminal:<br />
+<code>python --version</code>, <code>git --version</code>, <code>docker --version</code>, <code>code --version</code>  </p>
+</blockquote>
+<h2 id="2-opsi-a-python-native-paling-cepat">2. Opsi A – Python Native (paling cepat)</h2>
+<h3 id="langkah-1-clone-repo-ini">Langkah 1 Clone repo ini</h3>
+<pre><code class="language-bash">git clone https://github.com/&lt;your-github&gt;/generative-ai-for-beginners
+cd generative-ai-for-beginners
+</code></pre>
+<h3 id="langkah-2-buat-aktifkan-lingkungan-virtual">Langkah 2 Buat &amp; aktifkan lingkungan virtual</h3>
+<pre><code class="language-bash">python -m venv .venv          # buat satu
+source .venv/bin/activate     # macOS / Linux
+.\.venv\Scripts\activate      # Windows PowerShell
+</code></pre>
+<p>✅ Prompt sekarang harus diawali dengan (.venv)—itu artinya Anda sudah berada di dalam lingkungan.</p>
+<h3 id="langkah-3-instal-dependensi">Langkah 3 Instal dependensi</h3>
+<pre><code class="language-bash">pip install -r requirements.txt
+</code></pre>
+<p>Langsung ke Bagian 3 tentang <a href="#3-tambahkan-kunci-api-anda">API keys</a></p>
+<h2 id="2-opsi-b-vs-code-dev-container-docker">2. Opsi B – VS Code Dev Container (Docker)</h2>
+<p>Kami mengatur repositori dan kursus ini dengan <a href="https://containers.dev?WT.mc_id=academic-105485-koreyst">development container</a> yang memiliki runtime Universal yang mendukung pengembangan Python3, .NET, Node.js, dan Java. Konfigurasi terkait didefinisikan dalam file <code>devcontainer.json</code> yang terletak di folder <code>.devcontainer/</code> pada akar repositori ini.</p>
+<blockquote>
+<p><strong>Kenapa memilih ini?</strong><br />
+Lingkungan identik dengan Codespaces; tidak ada pergeseran dependensi.</p>
+</blockquote>
+<h3 id="langkah-0-instal-tambahan">Langkah 0 Instal tambahan</h3>
+<p>Docker Desktop – pastikan <code>docker --version</code> berjalan.<br />
+VS Code Remote – ekstensi Containers (ID: ms-vscode-remote.remote-containers).</p>
+<h3 id="langkah-1-buka-repo-di-vs-code">Langkah 1 Buka repo di VS Code</h3>
+<p>File ▸ Open Folder…  → generative-ai-for-beginners</p>
+<p>VS Code mendeteksi .devcontainer/ dan memunculkan prompt.</p>
+<h3 id="langkah-2-buka-ulang-dalam-container">Langkah 2 Buka ulang dalam container</h3>
+<p>Klik “Reopen in Container”. Docker membangun image (≈ 3 menit pertama kali).<br />
+Ketika prompt terminal muncul, Anda sudah berada di dalam container.</p>
+<h2 id="2-opsi-c-miniconda">2. Opsi C – Miniconda</h2>
+<p><a href="https://conda.io/en/latest/miniconda.html?WT.mc_id=academic-105485-koreyst">Miniconda</a> adalah installer ringan untuk memasang <a href="https://docs.conda.io/en/latest?WT.mc_id=academic-105485-koreyst">Conda</a>, Python, serta beberapa paket.<br />
+Conda sendiri adalah manajer paket yang memudahkan pengaturan dan perpindahan antar <a href="https://docs.python.org/3/tutorial/venv.html?WT.mc_id=academic-105485-koreyst">lingkungan virtual</a> dan paket Python berbeda. Ini juga berguna untuk memasang paket yang tidak tersedia melalui <code>pip</code>.</p>
+<h3 id="langkah-0-instal-miniconda">Langkah 0 Instal Miniconda</h3>
+<p>Ikuti <a href="https://docs.anaconda.com/free/miniconda/#quick-command-line-install?WT.mc_id=academic-105485-koreyst">panduan instalasi MiniConda</a> untuk mengaturnya.</p>
+<pre><code class="language-bash">conda --version
+</code></pre>
+<h3 id="langkah-1-buat-lingkungan-virtual">Langkah 1 Buat lingkungan virtual</h3>
+<p>Buat file lingkungan baru (<em>environment.yml</em>). Jika Anda mengikuti menggunakan Codespaces, buat di dalam direktori <code>.devcontainer</code>, jadi <code>.devcontainer/environment.yml</code>.</p>
+<h3 id="langkah-2-isikan-file-lingkungan-anda">Langkah 2 Isikan file lingkungan Anda</h3>
+<p>Tambahkan potongan berikut ke dalam <code>environment.yml</code></p>
+<pre><code class="language-yml">name: &lt;environment-name&gt;
+channels:
+ - defaults
+ - microsoft
+dependencies:
+- python=&lt;python-version&gt;
+- openai
+- python-dotenv
+- pip
+- pip:
+    - azure-ai-ml
+
+</code></pre>
+<h3 id="langkah-3-buat-lingkungan-conda-anda">Langkah 3 Buat lingkungan Conda Anda</h3>
+<p>Jalankan perintah di bawah di command line/terminal Anda</p>
+<pre><code class="language-bash">conda env create --name ai4beg --file .devcontainer/environment.yml # Sub path .devcontainer hanya berlaku untuk pengaturan Codespace saja
+conda activate ai4beg
+</code></pre>
+<p>Rujuk ke <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html?WT.mc_id=academic-105485-koreyst">panduan lingkungan Conda</a> jika mengalami masalah.</p>
+<h2 id="2-opsi-d-jupyter-jupyter-lab-klasik-di-browser-anda">2 Opsi D – Jupyter / Jupyter Lab Klasik (di browser Anda)</h2>
+<blockquote>
+<p><strong>Untuk siapa ini?</strong><br />
+Siapa saja yang menyukai antarmuka Jupyter klasik atau ingin menjalankan notebook tanpa VS Code.  </p>
+</blockquote>
+<h3 id="langkah-1-pastikan-jupyter-terpasang">Langkah 1 Pastikan Jupyter terpasang</h3>
+<p>Untuk memulai Jupyter secara lokal, buka terminal/command line, masuk ke direktori kursus, dan jalankan:</p>
+<pre><code class="language-bash">jupyter notebook
+</code></pre>
+<p>atau</p>
+<pre><code class="language-bash">jupyterhub
+</code></pre>
+<p>Ini akan memulai instance Jupyter dan URL untuk mengaksesnya akan ditampilkan di jendela command line.</p>
+<p>Setelah mengakses URL, Anda harus melihat garis besar kursus dan dapat menavigasi ke file <code>*.ipynb</code> mana pun. Misalnya, <code>08-building-search-applications/python/oai-solution.ipynb</code>.</p>
+<h2 id="3-tambahkan-kunci-api-anda">3. Tambahkan Kunci API Anda</h2>
+<p>Menjaga kunci API Anda aman dan terlindungi penting saat membangun aplikasi jenis apa pun. Kami menyarankan agar tidak menyimpan kunci API langsung di kode Anda. Meng-commit detail tersebut ke repositori publik dapat menyebabkan masalah keamanan dan bahkan biaya yang tidak diinginkan jika digunakan oleh pihak yang tidak bertanggung jawab.<br />
+Berikut panduan langkah demi langkah cara membuat file <code>.env</code> untuk Python dan menambahkan kredensial Microsoft Foundry Models Anda:</p>
+<blockquote>
+<p><strong>Catatan:</strong> GitHub Models (dan variabel <code>GITHUB_TOKEN</code>-nya) akan dihentikan akhir Juli 2026. Panduan ini menggunakan <a href="https://ai.azure.com/catalog/models?WT.mc_id=academic-105485-koreyst">Microsoft Foundry Models</a> sebagai gantinya. Ingin bekerja sepenuhnya offline? Lihat <a href="https://foundrylocal.ai?WT.mc_id=academic-105485-koreyst">Foundry Local</a>.</p>
+</blockquote>
+<ol>
+<li><strong>Pergi ke Direktori Proyek Anda</strong>: Buka terminal atau command prompt dan masuk ke direktori root proyek Anda tempat Anda ingin membuat file <code>.env</code>.</li>
+</ol>
+<p><code>bash
+   cd path/to/your/project</code></p>
+<ol start="2">
+<li><strong>Buat File <code>.env</code></strong>: Gunakan editor teks pilihan Anda untuk membuat file baru bernama <code>.env</code>. Jika menggunakan command line, Anda bisa menggunakan <code>touch</code> (pada sistem berbasis Unix) atau <code>echo</code> (pada Windows):</li>
+</ol>
+<p>Sistem berbasis Unix:</p>
+<p><code>bash
+   touch .env</code></p>
+<p>Windows:</p>
+<p><code>cmd
+   echo . &gt; .env</code></p>
+<ol start="3">
+<li><strong>Edit File <code>.env</code></strong>: Buka file <code>.env</code> di editor teks (misalnya VS Code, Notepad++, atau editor lain). Tambahkan baris berikut ke file, ganti placeholder dengan endpoint proyek Microsoft Foundry dan kunci API Anda yang sebenarnya:</li>
+</ol>
+<p><code>env
+   AZURE_INFERENCE_ENDPOINT=your_foundry_endpoint_here
+   AZURE_INFERENCE_CREDENTIAL=your_foundry_api_key_here</code></p>
+<ol start="4">
+<li>
+<p><strong>Simpan File</strong>: Simpan perubahan dan tutup editor teks.</p>
+</li>
+<li>
+<p><strong>Pasang <code>python-dotenv</code></strong>: Jika belum, Anda perlu memasang paket <code>python-dotenv</code> untuk memuat variabel lingkungan dari file <code>.env</code> ke aplikasi Python Anda. Anda bisa memasangnya dengan <code>pip</code>:</p>
+</li>
+</ol>
+<p><code>bash
+   pip install python-dotenv</code></p>
+<ol start="6">
+<li><strong>Muat Variabel Lingkungan di Script Python Anda</strong>: Di script Python Anda, gunakan paket <code>python-dotenv</code> untuk memuat variabel lingkungan dari file <code>.env</code>:</li>
+</ol>
+<p>```python<br />
+   from dotenv import load_dotenv<br />
+   import os</p>
+<p># Muat variabel lingkungan dari file .env<br />
+   load_dotenv()</p>
+<p># Akses variabel Microsoft Foundry Models<br />
+   endpoint = os.getenv("AZURE_INFERENCE_ENDPOINT")<br />
+   token = os.getenv("AZURE_INFERENCE_CREDENTIAL")</p>
+<p>print(endpoint)<br />
+   ```</p>
+<p>Itu saja! Anda telah berhasil membuat file <code>.env</code>, menambahkan kredensial Microsoft Foundry Models Anda, dan memuatnya ke aplikasi Python Anda.</p>
+<p>🔐 Jangan pernah commit .env—file itu sudah ada di .gitignore.<br />
+Instruksi lengkap dari provider tersedia di <a href="03-providers.html"><code>providers.md</code></a>.</p>
+<h2 id="4-selanjutnya">4. Selanjutnya?</h2>
+<table>
+<thead>
+<tr>
+<th>Saya ingin…</th>
+<th>Pergi ke…</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mulai Pelajaran 1</td>
+<td><a href="../01-introduction-to-genai/README.html"><code>01-introduction-to-genai</code></a></td>
+</tr>
+<tr>
+<td>Mengatur Penyedia LLM</td>
+<td><a href="03-providers.html"><code>providers.md</code></a></td>
+</tr>
+<tr>
+<td>Bertemu pelajar lain</td>
+<td><a href="https://aka.ms/genai-discord?WT.mc_id=academic-105485-koreyst">Bergabung dengan Discord kami</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-pemecahan-masalah">5. Pemecahan Masalah</h2>
+<table>
+<thead>
+<tr>
+<th>Gejala</th>
+<th>Solusi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>python not found</code></td>
+<td>Tambahkan Python ke PATH atau buka ulang terminal setelah install</td>
+</tr>
+<tr>
+<td><code>pip</code> tidak bisa membangun wheels (Windows)</td>
+<td><code>pip install --upgrade pip setuptools wheel</code> lalu coba lagi.</td>
+</tr>
+<tr>
+<td><code>ModuleNotFoundError: dotenv</code></td>
+<td>Jalankan <code>pip install -r requirements.txt</code> (lingkungan belum terpasang).</td>
+</tr>
+<tr>
+<td>Build Docker gagal <em>No space left</em></td>
+<td>Docker Desktop ▸ <em>Settings</em> ▸ <em>Resources</em> → tingkatkan ukuran disk.</td>
+</tr>
+<tr>
+<td>VS Code terus minta buka ulang</td>
+<td>Anda mungkin mengaktifkan kedua Opsi; pilih salah satu (venv <strong>atau</strong> container)</td>
+</tr>
+<tr>
+<td>OpenAI 401 / 429 error</td>
+<td>Periksa nilai <code>OPENAI_API_KEY</code> / batas permintaan.</td>
+</tr>
+<tr>
+<td>Error pakai Conda</td>
+<td>Pasang library Microsoft AI dengan <code>conda install -c microsoft azure-ai-ml</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<!-- CO-OP TRANSLATOR DISCLAIMER START -->
+<p><strong>Penafian</strong>:<br />
+Dokumen ini telah diterjemahkan menggunakan layanan terjemahan AI <a href="https://github.com/Azure/co-op-translator">Co-op Translator</a>. Meskipun kami berupaya untuk mencapai akurasi, harap diketahui bahwa terjemahan otomatis mungkin mengandung kesalahan atau ketidakakuratan. Dokumen asli dalam bahasa aslinya harus dianggap sebagai sumber yang sah. Untuk informasi penting, disarankan menggunakan terjemahan profesional oleh manusia. Kami tidak bertanggung jawab atas kesalahpahaman atau penafsiran yang keliru yang timbul dari penggunaan terjemahan ini.</p>
+<!-- CO-OP TRANSLATOR DISCLAIMER END -->
+</body>
+</html>

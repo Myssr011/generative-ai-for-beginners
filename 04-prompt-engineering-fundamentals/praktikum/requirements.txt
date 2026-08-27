@@ -1,4 +1,0 @@
-requests
-tiktoken
-pytest
-ipykernel
